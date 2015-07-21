@@ -1,2 +1,2 @@
 # DissPlayers
-Input-Komponente
+DISPLAY-Komponente für crc
