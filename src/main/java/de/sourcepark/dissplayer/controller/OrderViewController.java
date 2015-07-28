@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package de.sourcepark.dissplayer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,55 +14,70 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
 
 /**
+ * FXML Controller class
  *
  * @author cjelinski
  */
-public class DisplayViewController {
+public class OrderViewController implements Initializable {
 
     //REST URL
     private static final String REST_URL = "http://adelphi:9999/control/order/";
-
     @FXML
-    private Label label;
+    private Text orderNumber;
     @FXML
     private Button closeButton;
     @FXML
     private Button cancelButton;
-    @FXML
-    private TextField inputField;
-    @FXML
-    private ProgressBar progressBar;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }
 
     @FXML
-    private void testAuswurf(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
-        label.setText(inputField.getText());
-        if (inputField != null && !inputField.getText().isEmpty()) {
-            callOrderService(inputField.getText());
+    public void addNumber(ActionEvent event) {
+        Button buttonx = (Button) event.getSource();
+        String numberToAdd = buttonx.getText();
+        System.out.println("add a number " + numberToAdd);
+        if (orderNumber.getText().length() < 4) {
+            orderNumber.setText(orderNumber.getText().concat(numberToAdd));
         }
     }
 
     @FXML
-    private void exit() {
-        System.out.println("Exit gewählt");
-        label.setText("Exit");
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+    public void clearLastNumber() {
+        if (!orderNumber.getText().isEmpty()) {
+            orderNumber.setText(removeLastChar(orderNumber.getText()));
+        }
+    }
+
+    @FXML
+    public void clearAll() {
+        orderNumber.setText("");
+    }
+
+    @FXML
+    public void orderCandy() {
+        if (orderNumber.getText().length() == 4) {
+            callOrderService(orderNumber.getText());
+        }
     }
 
     @FXML
@@ -98,7 +118,9 @@ public class DisplayViewController {
         } catch (IOException ex) {
             System.out.println("mapper exception");
         }
-
     }
 
+    private static String removeLastChar(String str) {
+        return str.substring(0, str.length() - 1);
+    }
 }

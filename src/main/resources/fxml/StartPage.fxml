@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="581.0" prefWidth="412.0" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
+    <children>
+      <Button fx:id="closeButton" layoutX="293.0" layoutY="509.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
+      <ImageView fx:id="rfid" fitHeight="209.0" fitWidth="267.0" layoutX="90.0" layoutY="268.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/RFID_white.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="73.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Candy Robot" wrappingWidth="299.205078125">
+         <font>
+            <Font name="Arial" size="48.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="80.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Karte an den Leser halten">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+    </children>
+</AnchorPane>
