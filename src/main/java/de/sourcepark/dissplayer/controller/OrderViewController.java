@@ -15,6 +15,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +24,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javax.ws.rs.core.MediaType;
@@ -40,11 +42,17 @@ public class OrderViewController implements Initializable {
     //REST URL
     private static final String REST_URL = "http://adelphi:9999/control/order/";
     @FXML
-    private Text orderNumber;
+    private TextField orderNumber;
     @FXML
     private Button closeButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private Button orderButton;
+    @FXML
+    private Text errorMessage;
+    @FXML
+    private AnchorPane mainPane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -59,12 +67,16 @@ public class OrderViewController implements Initializable {
         if (orderNumber.getText().length() < 4) {
             orderNumber.setText(orderNumber.getText().concat(numberToAdd));
         }
+        if (orderNumber.getText().length() == 4) {
+            orderButton.setDisable(false);
+        }
     }
 
     @FXML
     public void clearLastNumber() {
         if (!orderNumber.getText().isEmpty()) {
             orderNumber.setText(removeLastChar(orderNumber.getText()));
+            orderButton.setDisable(true);
         }
     }
 
@@ -75,9 +87,11 @@ public class OrderViewController implements Initializable {
 
     @FXML
     public void orderCandy() {
+        mainPane.setDisable(true);
         if (orderNumber.getText().length() == 4) {
             callOrderService(orderNumber.getText());
         }
+        mainPane.setDisable(false);
     }
 
     @FXML
@@ -108,16 +122,27 @@ public class OrderViewController implements Initializable {
 
 //        MultivaluedMap formData = new MultivaluedMapImpl();
 //        formData.add("name1", value);
-        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
-        ObjectMapper mapper = new ObjectMapper();
-
-        //System.out.println("Response " + response.getEntity(String.class));
         try {
-            ErrorCode errorCode = mapper.readValue(response.getEntity(String.class), ErrorCode.class);
-            System.out.println(errorCode.getErrorMessage());
-        } catch (IOException ex) {
-            System.out.println("mapper exception");
+            ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+
+            if (response.getEntity(String.class).equals("OK")) {
+                System.out.println("Response: " + response.getEntity(String.class));
+                //TODO: response seite für alles hat funktioniert
+            } else {
+                try {
+                    ErrorCode errorCode = mapper.readValue(response.getEntity(String.class), ErrorCode.class);
+                    System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
+                    errorMessage.setText(errorCode.getErrorMessage());
+                } catch (IOException ex) {
+                    System.out.println("mapper exception");
+                }
+            }
+        } catch (ClientHandlerException | UniformInterfaceException ex) {
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            errorMessage.setText("Service nicht erreichbar");
         }
+
     }
 
     private static String removeLastChar(String str) {
