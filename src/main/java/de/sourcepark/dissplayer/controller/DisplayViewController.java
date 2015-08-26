@@ -30,7 +30,7 @@ import javax.ws.rs.core.UriBuilderException;
 public class DisplayViewController {
 
     //REST URL
-    private static final String REST_URL = "http://adelphi:9999/control/order/";
+    private static final String REST_URL = "http://localhost:9999/control/order/";
 
     @FXML
     private Label label;

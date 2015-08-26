@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="581.0" prefWidth="412.0" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
     <children>
       <Button fx:id="closeButton" layoutX="293.0" layoutY="509.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
       <ImageView fx:id="rfid" fitHeight="209.0" fitWidth="267.0" layoutX="90.0" layoutY="268.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
@@ -16,7 +14,7 @@
             <Image url="@../img/RFID_white.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="73.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Candy Robot" wrappingWidth="299.205078125">
+      <Text fill="WHITE" layoutX="43.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Candy Robot" wrappingWidth="327.0">
          <font>
             <Font name="Arial" size="48.0" />
          </font>

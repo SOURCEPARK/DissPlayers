@@ -40,7 +40,7 @@ import javax.ws.rs.core.UriBuilderException;
 public class OrderViewController implements Initializable {
 
     //REST URL
-    private static final String REST_URL = "http://adelphi:9999/control/order/";
+    private static final String REST_URL = "http://localhost:9999/control/order/";
     @FXML
     private TextField orderNumber;
     @FXML
@@ -64,10 +64,10 @@ public class OrderViewController implements Initializable {
         Button buttonx = (Button) event.getSource();
         String numberToAdd = buttonx.getText();
         System.out.println("add a number " + numberToAdd);
-        if (orderNumber.getText().length() < 4) {
+        if (orderNumber.getText().length() < 2) {
             orderNumber.setText(orderNumber.getText().concat(numberToAdd));
         }
-        if (orderNumber.getText().length() == 4) {
+        if (orderNumber.getText().length() == 2) {
             orderButton.setDisable(false);
         }
     }
@@ -88,7 +88,7 @@ public class OrderViewController implements Initializable {
     @FXML
     public void orderCandy() {
         mainPane.setDisable(true);
-        if (orderNumber.getText().length() == 4) {
+        if (orderNumber.getText().length() == 2) {
             callOrderService(orderNumber.getText());
         }
         mainPane.setDisable(false);

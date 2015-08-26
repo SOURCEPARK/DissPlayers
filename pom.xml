@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-bundle</artifactId>
-            <version>1.9.1</version>
+            <version>1.9.1</version>            
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -120,6 +120,32 @@
                     </additionalClasspathElements>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>de.sourcepark.dissplayer.DissPlayer</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                        <manifestEntries>
+                            <BuildVersion>${project.version}-B${timestamp}</BuildVersion>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+	    
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/diss-dist.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>	
         </plugins>
     </build>
 </project>
