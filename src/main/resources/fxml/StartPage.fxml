@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
+<AnchorPane id="AnchorPane" prefHeight="581.0" prefWidth="412.0" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
     <children>
-      <Button fx:id="closeButton" layoutX="293.0" layoutY="509.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
-      <ImageView fx:id="rfid" fitHeight="209.0" fitWidth="267.0" layoutX="90.0" layoutY="268.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
+      <Button fx:id="closeButton" layoutX="349.0" layoutY="534.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
+      <ImageView fx:id="rfid" fitHeight="209.0" fitWidth="267.0" layoutX="82.0" layoutY="181.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/RFID_white.png" />
          </image>
@@ -19,7 +19,7 @@
             <Font name="Arial" size="48.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="80.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Karte an den Leser halten">
+      <Text fill="WHITE" layoutX="47.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Karte an den Leser halten">
          <font>
             <Font size="24.0" />
          </font>
@@ -29,5 +29,15 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
+      <Text fill="WHITE" layoutX="177.0" layoutY="426.0" strokeType="OUTSIDE" strokeWidth="0.0" text="oder" wrappingWidth="59.54833984375">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="56.0" fitWidth="327.0" layoutX="68.0" layoutY="446.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/Bitcoin_logo.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>

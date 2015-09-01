@@ -27,7 +27,7 @@ import javax.ws.rs.core.UriBuilderException;
  *
  * @author cjelinski
  */
-public class DisplayViewController {
+public class MaintenanceViewController {
 
     //REST URL
     private static final String REST_URL = "http://localhost:9999/control/order/";
@@ -63,8 +63,7 @@ public class DisplayViewController {
     @FXML
     private void cancel() {
         Stage stage;
-        Parent root = null;
-        System.out.println("Auth selected");
+        Parent root = null;        
         stage = (Stage) cancelButton.getScene().getWindow();
         //load up OTHER FXML document
         try {

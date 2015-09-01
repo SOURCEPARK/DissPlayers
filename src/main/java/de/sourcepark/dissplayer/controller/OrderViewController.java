@@ -112,6 +112,23 @@ public class OrderViewController implements Initializable {
         stage.show();
     }
 
+    @FXML
+    private void maintenance() {
+        Stage stage;
+        Parent root = null;
+        stage = (Stage) cancelButton.getScene().getWindow();
+        //load up OTHER FXML document
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/MaintenanceView.fxml"));
+        } catch (IOException io) {
+        }
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+
+        stage.show();
+    }
+
     /*
      Call order REST Service
      */
