@@ -25,14 +25,20 @@ import javafx.stage.Stage;
  */
 public class StartPageController implements Initializable {
 
+    //REST URL
+    private static final String REST_URL = "http://localhost:9999/control/order/";
+    
     @FXML
     private Button closeButton;
 
     @FXML
     private ImageView rfid;
-    
+
     @FXML
     private Text errorMessage;
+
+    @FXML
+    private String userID;
 
     /**
      * Initializes the controller class.
@@ -53,7 +59,7 @@ public class StartPageController implements Initializable {
     private void authentificate() {
         Stage stage;
         Parent root = null;
-        int userID = 000;
+
         System.out.println("Auth selected");
         stage = (Stage) rfid.getScene().getWindow();
         //load up OTHER FXML document
@@ -75,7 +81,7 @@ public class StartPageController implements Initializable {
     /*
      Authentification Method for RFID CARD
      */
-    private boolean callAuthentificationService(int userID) {
+    private boolean callAuthentificationService(String userID) {
         boolean retVal = true;
         //call rest service here
         return retVal;

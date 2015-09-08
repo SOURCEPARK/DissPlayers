@@ -7,17 +7,20 @@
 
 <AnchorPane id="AnchorPane" prefHeight="581.0" prefWidth="412.0" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.MaintenanceViewController">
     <children>
-        <Button fx:id="button" layoutX="75.0" layoutY="243.0" onAction="#testAuswurf" prefHeight="44.0" prefWidth="261.0" text="Test-Auswurf" />
+        <Button fx:id="button" layoutX="18.0" layoutY="262.0" onAction="#testAuswurf" prefHeight="44.0" prefWidth="115.0" text="Auswurf" />
         <Label fx:id="label" layoutX="172.0" layoutY="420.0" minHeight="16" minWidth="69" />
-      <Text fill="WHITE" layoutX="75.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wartungsseite">
+      <Text fill="WHITE" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wartungsseite" textAlignment="CENTER" wrappingWidth="412.0">
          <font>
             <Font size="36.0" />
          </font>
       </Text>
-      <TextField fx:id="inputField" layoutX="75.0" layoutY="67.0" prefHeight="26.0" prefWidth="261.0" text="Eingabe" />
-      <Button layoutX="75.0" layoutY="291.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="261.0" text="Kalibrierung" />
-      <TextArea layoutX="16.0" layoutY="339.0" prefHeight="228.0" prefWidth="384.0" text="Log-Meldungen" />
-      <Pane layoutX="75.0" layoutY="98.0" prefHeight="139.0" prefWidth="169.0">
+      <TextField fx:id="inputField" layoutX="75.0" layoutY="67.0" prefHeight="26.0" prefWidth="261.0" />
+      <Button layoutX="18.0" layoutY="311.0" mnemonicParsing="false" onAction="#calibrate" prefHeight="44.0" prefWidth="115.0" text="Kalibrierung" />
+      <TextArea fx:id="logText" layoutX="15.0" layoutY="367.0" prefHeight="200.0" prefWidth="385.0" text="Log-Meldungen:">
+         <font>
+            <Font name="Courier New" size="14.0" />
+         </font></TextArea>
+      <Pane layoutX="75.0" layoutY="115.0" prefHeight="139.0" prefWidth="169.0">
          <children>
             <GridPane prefHeight="139.0" prefWidth="169.0">
               <columnConstraints>
@@ -31,23 +34,23 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="62.0" prefWidth="90.0" text="1" />
-                  <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="67.0" text="2" GridPane.columnIndex="1" />
-                  <Button mnemonicParsing="false" prefHeight="58.0" prefWidth="74.0" text="3" GridPane.columnIndex="2" />
-                  <Button mnemonicParsing="false" prefHeight="77.0" prefWidth="87.0" text="4" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="82.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" prefHeight="57.0" prefWidth="76.0" text="6" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="76.0" text="7" GridPane.rowIndex="2" />
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="67.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Button mnemonicParsing="false" prefHeight="58.0" prefWidth="68.0" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="62.0" prefWidth="90.0" text="1" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="56.0" prefWidth="67.0" text="2" GridPane.columnIndex="1" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="58.0" prefWidth="74.0" text="3" GridPane.columnIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="77.0" prefWidth="87.0" text="4" GridPane.rowIndex="1" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="54.0" prefWidth="82.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="57.0" prefWidth="76.0" text="6" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="60.0" prefWidth="76.0" text="7" GridPane.rowIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="60.0" prefWidth="67.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="58.0" prefWidth="68.0" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
       </Pane>
-      <Button fx:id="cancelButton" layoutX="344.0" layoutY="297.0" mnemonicParsing="false" onAction="#cancel" prefHeight="32.0" prefWidth="56.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
-      <Pane layoutX="250.0" layoutY="98.0" prefHeight="139.0" prefWidth="86.0">
+      <Button fx:id="cancelButton" layoutX="344.0" layoutY="215.0" mnemonicParsing="false" onAction="#cancel" prefHeight="32.0" prefWidth="56.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
+      <Pane layoutX="250.0" layoutY="115.0" prefHeight="139.0" prefWidth="86.0">
          <children>
-            <GridPane layoutX="2.0" prefHeight="139.0" prefWidth="86.0">
+            <GridPane layoutX="2.0" prefHeight="139.0" prefWidth="84.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -57,11 +60,17 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="66.0" prefWidth="119.0" text="&lt;--" />
+                  <Button mnemonicParsing="false" onAction="#clearLastNumber" prefHeight="66.0" prefWidth="119.0" text="&lt;--" />
                   <Button mnemonicParsing="false" prefHeight="79.0" prefWidth="123.0" text="0" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
       </Pane>
+      <Button layoutY="215.0" mnemonicParsing="false" onAction="#clearLog" prefHeight="39.0" prefWidth="69.0" style="-fx-background-color: #04ACE9;" text="clear" textFill="WHITE" />
+      <Button layoutX="148.0" layoutY="262.0" onAction="#motor" prefHeight="44.0" prefWidth="115.0" text="Motor" />
+      <Button layoutX="148.0" layoutY="311.0" mnemonicParsing="false" onAction="#allOff" prefHeight="44.0" prefWidth="115.0" text="allOff" />
+      <Button layoutX="279.0" layoutY="262.0" onAction="#step" prefHeight="44.0" prefWidth="115.0" text="Schritt" />
+      <Button layoutX="279.0" layoutY="311.0" mnemonicParsing="false" onAction="#col" prefHeight="44.0" prefWidth="57.0" text="col" />
+      <Button layoutX="337.0" layoutY="311.0" mnemonicParsing="false" onAction="#row" prefHeight="44.0" prefWidth="57.0" text="row" />
     </children>
 </AnchorPane>

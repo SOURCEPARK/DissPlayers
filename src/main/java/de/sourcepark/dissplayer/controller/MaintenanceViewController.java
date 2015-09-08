@@ -1,13 +1,5 @@
 package de.sourcepark.dissplayer.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,11 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilderException;
 
 /**
  *
@@ -42,13 +32,79 @@ public class MaintenanceViewController {
     private TextField inputField;
     @FXML
     private ProgressBar progressBar;
+    @FXML
+    private TextArea logText;
 
     @FXML
     private void testAuswurf(ActionEvent event) {
         System.out.println("Test-Aufruf gestartet");
-        label.setText(inputField.getText());
-        if (inputField != null && !inputField.getText().isEmpty()) {
-            callOrderService(inputField.getText());
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Test-Aufruf gestartet für Produkt: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Test-Aufruf gestartet für Produkt: " + inputField.getText() + "\n");
+        }
+    }
+
+    @FXML
+    private void calibrate(ActionEvent event) {
+        System.out.println("Kalibration gestartet");
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Kalibration gestartet für Fach: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Kalibration gestartet für Fach: " + inputField.getText() + "\n");
+        }
+    }
+
+    @FXML
+    private void motor(ActionEvent event) {
+        System.out.println("Test-Aufruf gestartet");
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Motor-Aufruf gestartet für: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Motor-Aufruf gestartet für: " + inputField.getText() + "\n");
+        }
+    }
+
+    @FXML
+    private void allOff(ActionEvent event) {
+        System.out.println("Test-Aufruf gestartet");
+        logText.setWrapText(true);
+            logText.appendText("NOT STOP!!!\n");
+    }
+
+    @FXML
+    private void step(ActionEvent event) {
+        System.out.println("Test-Aufruf gestartet");
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Step-Aufruf gestartet für: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Step-Aufruf gestartet für: " + inputField.getText() + "\n");
+        }
+    }
+
+    @FXML
+    private void col(ActionEvent event) {
+        System.out.println("Test-Aufruf gestartet");
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Col-Aufruf gestartet für: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Col-Aufruf gestartet für: " + inputField.getText() + "\n");
+        }
+    }
+
+    @FXML
+    private void row(ActionEvent event) {
+        System.out.println("Test-Aufruf gestartet");
+        logText.setWrapText(true);
+        if (inputField.getText().length() < 2) {
+            logText.appendText("Row-Aufruf gestartet für: ungültige Eingabe\n");
+        } else {
+            logText.appendText("Row-Aufruf gestartet für: " + inputField.getText() + "\n");
         }
     }
 
@@ -61,9 +117,35 @@ public class MaintenanceViewController {
     }
 
     @FXML
+    private void clearLog() {
+        logText.clear();
+    }
+
+    @FXML
+    public void addNumber(ActionEvent event) {
+        Button buttonx = (Button) event.getSource();
+        String numberToAdd = buttonx.getText();
+        System.out.println("add a number " + numberToAdd);
+        if (inputField.getText().length() < 2) {
+            inputField.setText(inputField.getText().concat(numberToAdd));
+        }
+    }
+
+    @FXML
+    public void clearLastNumber() {
+        if (!inputField.getText().isEmpty()) {
+            inputField.setText(removeLastChar(inputField.getText()));
+        }
+    }
+
+    private static String removeLastChar(String str) {
+        return str.substring(0, str.length() - 1);
+    }
+
+    @FXML
     private void cancel() {
         Stage stage;
-        Parent root = null;        
+        Parent root = null;
         stage = (Stage) cancelButton.getScene().getWindow();
         //load up OTHER FXML document
         try {
@@ -75,29 +157,6 @@ public class MaintenanceViewController {
         stage.setScene(scene);
 
         stage.show();
-    }
-
-    /*
-     Call order REST Service
-     */
-    private void callOrderService(String value) throws ClientHandlerException, IllegalArgumentException, UniformInterfaceException, UriBuilderException {
-        ClientConfig config = new DefaultClientConfig();
-        Client client = Client.create(config);
-        WebResource webResource = client.resource(UriBuilder.fromUri(REST_URL + value).build());
-
-//        MultivaluedMap formData = new MultivaluedMapImpl();
-//        formData.add("name1", value);
-        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
-        ObjectMapper mapper = new ObjectMapper();
-
-        //System.out.println("Response " + response.getEntity(String.class));
-        try {
-            ErrorCode errorCode = mapper.readValue(response.getEntity(String.class), ErrorCode.class);
-            System.out.println(errorCode.getErrorMessage());
-        } catch (IOException ex) {
-            System.out.println("mapper exception");
-        }
-
     }
 
 }
