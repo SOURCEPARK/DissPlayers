@@ -5,6 +5,9 @@
  */
 package de.sourcepark.dissplayer.controller;
 
+import static de.sourcepark.dissplayer.DissPlayer.PORT;
+import de.sourcepark.services.AuthService;
+import de.sourcepark.services.DissplayerServer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -56,7 +59,7 @@ public class StartPageController implements Initializable {
     }
 
     @FXML
-    private void authentificate() {
+    public void authentificate() {
         Stage stage;
         Parent root = null;
 
