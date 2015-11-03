@@ -142,13 +142,13 @@ public class OrderViewController implements Initializable {
         try {
             ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
             ObjectMapper mapper = new ObjectMapper();
-
-            if (response.getEntity(String.class).equals("OK")) {
+            String responseText = response.getEntity(String.class);
+            if (responseText.equals("OK")) {
                 System.out.println("Response: " + response.getEntity(String.class));
                 //TODO: response seite für alles hat funktioniert
             } else {
                 try {
-                    ErrorCode errorCode = mapper.readValue(response.getEntity(String.class), ErrorCode.class);
+                    ErrorCode errorCode = mapper.readValue(responseText, ErrorCode.class);
                     System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
                     errorMessage.setText(errorCode.getErrorMessage());
                 } catch (IOException ex) {

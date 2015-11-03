@@ -1,6 +1,15 @@
 package de.sourcepark.dissplayer.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import java.io.IOException;
+import java.util.Arrays;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +21,9 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
 
 /**
  *
@@ -20,7 +32,7 @@ import javafx.stage.Stage;
 public class MaintenanceViewController {
 
     //REST URL
-    private static final String REST_URL = "http://localhost:9999/control/order/";
+    private static final String BASIS_REST_URL = "http://localhost:9999/control/";
 
     @FXML
     private Label label;
@@ -34,77 +46,122 @@ public class MaintenanceViewController {
     private ProgressBar progressBar;
     @FXML
     private TextArea logText;
+    
+    /*
+     Call REST Services for maintenance
+     */
+    private void callMaintenanceService(String uri) throws ClientHandlerException, IllegalArgumentException, UniformInterfaceException, UriBuilderException {
+        ClientConfig config = new DefaultClientConfig();
+        Client client = Client.create(config);
+        WebResource webResource = client.resource(UriBuilder.fromUri(uri).build());
+        
+        try {
+            ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+            String responseText = response.getEntity(String.class);
+            if (responseText.equals("OK")) {
+                System.out.println("Response: " + response.getEntity(String.class));
+            } else {
+                try {
+                    ErrorCode errorCode = mapper.readValue(responseText, ErrorCode.class);
+                    System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
+                    logText.appendText(errorCode.getErrorMessage()+"\n");
+                } catch (IOException ex) {
+                    System.out.println("mapper exception");
+                }
+            }
+        } catch (ClientHandlerException | UniformInterfaceException ex) {
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            logText.appendText("Service nicht erreichbar");
+        } 
+
+    }
 
     @FXML
     private void testAuswurf(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Test-Auswurf gestartet");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Test-Aufruf gestartet für Produkt: ungültige Eingabe\n");
+        if (inputField.getText().length() == 2) {
+            logText.appendText("Test-Auswurf gestartet für Fach: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"order/"+inputField.getText());
+            logText.appendText("Test-Auswurf beendet" + "\n");
         } else {
-            logText.appendText("Test-Aufruf gestartet für Produkt: " + inputField.getText() + "\n");
+            logText.appendText("Test-Auswurf gestartet für Fach: ungültige Eingabe\n");
         }
+               
     }
 
     @FXML
     private void calibrate(ActionEvent event) {
         System.out.println("Kalibration gestartet");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Kalibration gestartet für Fach: ungültige Eingabe\n");
-        } else {
+        if (inputField.getText().length() == 2) {
             logText.appendText("Kalibration gestartet für Fach: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"calibrate/"+inputField.getText());
+            logText.appendText("Kalibration beendet" + "\n");
+        } else {
+            logText.appendText("Kalibration gestartet für Fach: ungültige Eingabe\n");
         }
     }
 
     @FXML
     private void motor(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Motortest gestartet");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Motor-Aufruf gestartet für: ungültige Eingabe\n");
+        if (inputField.getText().length() == 2) {
+            logText.appendText("Motortest gestartet für Fach: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"motor/"+inputField.getText());
+            logText.appendText("Motortest beendet" + "\n");
         } else {
-            logText.appendText("Motor-Aufruf gestartet für: " + inputField.getText() + "\n");
+            logText.appendText("Motortest gestartet für Fach: ungültige Eingabe\n");
         }
     }
 
     @FXML
     private void allOff(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Alle Motoren aus gestartet");
         logText.setWrapText(true);
-            logText.appendText("NOT STOP!!!\n");
+        logText.appendText("Alle Motoren werden ausgeschaltet..." + "\n");
+        callMaintenanceService(BASIS_REST_URL+"alloff");
+        logText.appendText("Alle Motoren erfolgreich ausgeschaltet." + "\n");
     }
 
     @FXML
     private void step(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Step gestartet");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Step-Aufruf gestartet für: ungültige Eingabe\n");
+        if (inputField.getText().length() == 2) {
+            logText.appendText("Step gestartet für Fach: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"step/"+inputField.getText());
+            logText.appendText("Step beendet" + "\n");
         } else {
-            logText.appendText("Step-Aufruf gestartet für: " + inputField.getText() + "\n");
+            logText.appendText("Step gestartet für Fach: ungültige Eingabe\n");
         }
     }
 
     @FXML
     private void col(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Col-Test gestartet (Stromversorgung für Spalte)");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Col-Aufruf gestartet für: ungültige Eingabe\n");
+        if (inputField.getText().length() == 2) {
+            logText.appendText("Col-Test gestartet (Stromversorgung für Spalte) für Spalte: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"colon/"+inputField.getText());
+            logText.appendText("Spalte " + inputField.getText() +" mit Strom versorgt. Beenden mit All Off.\n");
         } else {
-            logText.appendText("Col-Aufruf gestartet für: " + inputField.getText() + "\n");
+            logText.appendText("Col-Test gestartet (Stromversorgung für Spalte) für Spalte: ungültige Eingabe\n");
         }
     }
 
     @FXML
     private void row(ActionEvent event) {
-        System.out.println("Test-Aufruf gestartet");
+        System.out.println("Row-Test gestartet (Stromversorgung für Reihe)");
         logText.setWrapText(true);
-        if (inputField.getText().length() < 2) {
-            logText.appendText("Row-Aufruf gestartet für: ungültige Eingabe\n");
+        if (inputField.getText().length() == 2) {
+            logText.appendText("Row-Test gestartet (Stromversorgung für Reihe) für Reihe: " + inputField.getText() + "\n");
+            callMaintenanceService(BASIS_REST_URL+"rowon/"+inputField.getText());
+            logText.appendText("Reihe " + inputField.getText() +" mit Strom versorgt. Beenden mit All Off.\n");
         } else {
-            logText.appendText("Row-Aufruf gestartet für: " + inputField.getText() + "\n");
+            logText.appendText("Row-Test gestartet (Stromversorgung für Reihe) für Reihe: ungültige Eingabe\n");
         }
     }
 

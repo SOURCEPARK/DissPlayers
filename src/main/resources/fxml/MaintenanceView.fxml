@@ -61,7 +61,7 @@
               </rowConstraints>
                <children>
                   <Button mnemonicParsing="false" onAction="#clearLastNumber" prefHeight="66.0" prefWidth="119.0" text="&lt;--" />
-                  <Button mnemonicParsing="false" prefHeight="79.0" prefWidth="123.0" text="0" GridPane.rowIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="79.0" prefWidth="123.0" text="0" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
