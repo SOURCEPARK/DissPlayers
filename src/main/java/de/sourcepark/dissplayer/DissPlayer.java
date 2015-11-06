@@ -21,10 +21,11 @@ public class DissPlayer extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
 
         Scene scene = new Scene(root);
-
         final DissplayerServer server = new DissplayerServer();
         server.startServer(PORT, new AuthService());
-
+//        stage.setHeight(640);
+//        stage.setWidth(1024);
+//stage.setFullScreen(true);
         stage.setScene(scene);
         stage.show();
     }

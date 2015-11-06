@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="1024.0" prefWidth="600.0" style="-fx-background-color: #04ACE9;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
-    <children>
-      <Button fx:id="closeButton" layoutX="484.0" layoutY="934.0" mnemonicParsing="false" onAction="#exit" prefHeight="65.0" prefWidth="87.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE">
-         <font>
-            <Font size="24.0" />
-         </font></Button>
-      <ImageView fx:id="rfid" fitHeight="404.0" fitWidth="432.0" layoutX="82.0" layoutY="181.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/RFID_white.png" />
-         </image>
-      </ImageView>
-      <Text fill="WHITE" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Candy Robot" textAlignment="CENTER" wrappingWidth="600.0">
-         <font>
-            <Font name="Arial Bold" size="64.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Karte an den Leser halten" textAlignment="CENTER" wrappingWidth="600.0">
-         <font>
-            <Font size="36.0" />
-         </font>
-      </Text>
-      <Text fx:id="errorMessage" fill="WHITE" layoutX="7.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="399.0">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutX="253.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="oder" wrappingWidth="94.54833984375">
-         <font>
-            <Font size="36.0" />
-         </font>
-      </Text>
-      <ImageView fitHeight="191.0" fitWidth="444.0" layoutX="78.0" layoutY="705.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/Bitcoin_logo.png" />
-         </image>
-      </ImageView>
-    </children>
-</AnchorPane>
+<Pane prefHeight="603.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
+   <children>
+      <AnchorPane id="AnchorPane" layoutX="200.0" layoutY="-199.0" prefHeight="820.0" prefWidth="443.0" rotate="90.0" style="-fx-background-color: #04ACE9;">
+          <children>
+            <Button fx:id="closeButton" layoutX="484.0" layoutY="934.0" mnemonicParsing="false" onAction="#exit" prefHeight="65.0" prefWidth="87.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <ImageView fx:id="rfid" fitHeight="404.0" fitWidth="432.0" layoutX="82.0" layoutY="181.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/RFID_white.png" />
+               </image>
+            </ImageView>
+            <Text fill="WHITE" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Candy Robot" textAlignment="CENTER" wrappingWidth="600.0">
+               <font>
+                  <Font name="Arial Bold" size="64.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Karte an den Leser halten" textAlignment="CENTER" wrappingWidth="600.0">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Text>
+            <Text fx:id="errorMessage" fill="WHITE" layoutX="7.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="399.0">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="253.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="oder" wrappingWidth="94.54833984375">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="191.0" fitWidth="444.0" layoutX="78.0" layoutY="705.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/Bitcoin_logo.png" />
+               </image>
+            </ImageView>
+          </children>
+         <rotationAxis>
+            <Point3D z="3.0" />
+         </rotationAxis>
+      </AnchorPane>
+   </children>
+</Pane>
