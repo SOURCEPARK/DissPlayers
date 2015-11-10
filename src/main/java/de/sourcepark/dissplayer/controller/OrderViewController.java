@@ -144,7 +144,7 @@ public class OrderViewController implements Initializable {
             ObjectMapper mapper = new ObjectMapper();
             String responseText = response.getEntity(String.class);
             if (responseText.equals("OK")) {
-                System.out.println("Response: " + response.getEntity(String.class));
+                System.out.println("Response: " + responseText);
                 //TODO: response seite für alles hat funktioniert
             } else {
                 try {
@@ -152,7 +152,8 @@ public class OrderViewController implements Initializable {
                     System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
                     errorMessage.setText(errorCode.getErrorMessage());
                 } catch (IOException ex) {
-                    System.out.println("mapper exception");
+                    System.out.println("Error on errorcode handling");
+                    ex.printStackTrace();
                 }
             }
         } catch (ClientHandlerException | UniformInterfaceException ex) {

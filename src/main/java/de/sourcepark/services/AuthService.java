@@ -2,12 +2,20 @@ package de.sourcepark.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.sourcepark.dissplayer.controller.StartPageController;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import de.sourcepark.dissplayer.controller.ErrorCode;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import spark.Request;
 import spark.Response;
 
@@ -19,6 +27,9 @@ import spark.Response;
  * @author smatyba
  */
 public class AuthService extends CandyService {
+
+    //REST URL
+    private static final String REST_URL = "http://localhost:9999/control/authorize/";
 
     /**
      * Initializes a new instance of the ExampleCandyService class.
@@ -51,13 +62,34 @@ public class AuthService extends CandyService {
             if (!isEnabled()) {
                 throw new CandyRouteDisabledException();
             }
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            Pane p;
-            p = fxmlLoader.load(getClass().getResource("StartPage.fxml").openStream());
-            StartPageController controller = (StartPageController) fxmlLoader.getController();
-            controller.authentificate();
-            
-            return "Hello, " + request.params("no");
+            ClientConfig config = new DefaultClientConfig();
+            Client client = Client.create(config);
+
+            User user = new User();
+            WebResource webResource = client.resource(UriBuilder.fromUri(REST_URL + request.params("no")).build());
+            String responseString = "";
+
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                ClientResponse responseAuth = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+
+                responseString = responseAuth.getEntity(String.class);
+                user = mapper.readValue(responseString, User.class);
+                if (!user.getCardId().equals("")) {
+                    System.out.println("Response: " + user.getCardId());
+                } else {
+                    System.out.println("ErrorMessage: ");
+                    user.setCardId("unknown");
+                }
+            } catch (ClientHandlerException | UniformInterfaceException ex) {                
+                System.out.println(Arrays.toString(ex.getStackTrace()));
+            } catch (IOException ex) {
+                ErrorCode errorCode = mapper.readValue(responseString, ErrorCode.class);
+                System.out.println(errorCode.getErrorMessage());
+                return errorCode.getErrorMessage();
+            }
+
+            return user.getCardId();
         }
     }
 
