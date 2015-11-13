@@ -41,7 +41,7 @@
                   <Font size="36.0" />
                </font>
             </Text>
-            <ImageView fitHeight="191.0" fitWidth="444.0" layoutX="78.0" layoutY="705.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="bitcoinImg" fitHeight="191.0" fitWidth="444.0" layoutX="78.0" layoutY="705.0" onMouseClicked="#activateBitcoinMode" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/Bitcoin_logo.png" />
                </image>
