@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
@@ -45,7 +46,9 @@ public class BitcoinViewController implements Initializable {
 
     private static final String MSG_WELCOME = "Bitte scanne den QR-Code mit deiner mobilen Bitcoin-Wallet-App und schließe den Bezahlvorgang dort ab.";
     private static final String MSG_SUCCESS = "Zahlung erhalten";
-    private static final String MSG_FAILURE = "Es ist ein Fehler aufgetreten";
+    private static final String MSG_FAILURE = "Zahlung ist nicht erfolgt";
+    private static final String MSG_BITCOIN_SERVER_OFFLINE = "Bitcoin-Payment-Server ist nicht erreichbar";
+    private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler: %s";
 
     // FIXME: temporary solution: fixed btc address/amount
     private static final String BTC_ADDRESS = "13cSu17oJ2dFX5mTGeMTh8N3UTPv2pN5CZ";
@@ -55,6 +58,9 @@ public class BitcoinViewController implements Initializable {
     private static final String URL_DETECT_PAYMENT = "http://localhost:1337/detect_payment?btc_amount=%f&btc_receiver_address=%s";
 
     private static final String SERVER_OK = "payment received";
+    private static final String SERVER_PAYMENT_TIMEOUT_PREFIX = "payment not received in time";
+
+    private static final int MSG_SHOW_TIME = 5000; // ms
 
     Task<Void> awaitPaymentTask = new Task<Void>() {
         @Override protected Void call() throws Exception {
@@ -63,14 +69,19 @@ public class BitcoinViewController implements Initializable {
             String btcAddress = getBtcAddress();
             Double btcAmount = getBtcAmount();
 
-            if (awaitPayment(btcAddress, btcAmount))
-                updateMessage(MSG_SUCCESS);
+            try {
+                if (awaitPayment(btcAddress, btcAmount))
+                    updateMessage(MSG_SUCCESS);
 
-                // TODO: drop candy!!
-            else
-                updateMessage(MSG_FAILURE);
-
-            return null;
+                    // TODO: drop candy!!
+                else
+                    updateMessage(MSG_FAILURE);
+            } catch (Exception e) {
+                updateMessage(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
+            } finally {
+                Thread.sleep(MSG_SHOW_TIME);
+                return null;
+            }
         }
     };
 
@@ -90,7 +101,10 @@ public class BitcoinViewController implements Initializable {
             Thread awaitPaymentThread = new Thread(awaitPaymentTask);
             awaitPaymentThread.setDaemon(true);
             awaitPaymentThread.start();
+        } catch (ConnectException e) {
+            msg.setText(MSG_BITCOIN_SERVER_OFFLINE);
         } catch (Exception e) {
+            msg.setText(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -121,7 +135,7 @@ public class BitcoinViewController implements Initializable {
         return BTC_AMOUNT;
     }
 
-    protected boolean awaitPayment(String address, Double amount) {
+    protected boolean awaitPayment(String address, Double amount) throws Exception {
         try {
             URL url = new URL(
                     String.format(Locale.US, URL_DETECT_PAYMENT, amount, address)
@@ -140,15 +154,21 @@ public class BitcoinViewController implements Initializable {
                 sb.append(line);
             }
 
-            if (sb.toString().equals(SERVER_OK))
+            String body = sb.toString();
+            if (body.equals(SERVER_OK))
                 return true;
-
-            Context.getInstance().setPaymentType(null);
-            Context.getInstance().setActiveOrderNumber(null);
+            else if (body.startsWith(SERVER_PAYMENT_TIMEOUT_PREFIX))
+                return false;
+            else {
+                System.out.println(String.format("Bitcoin-Payment Server Error: %s", body));
+                throw new Exception("Bitcoin-Payment Server-Fehler");
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         } finally {
-            return false;
+            Context.getInstance().setPaymentType(null);
+            Context.getInstance().setActiveOrderNumber(null);
         }
     }
 
