@@ -9,11 +9,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  *
  * @author cjelinski
  */
 public class DissPlayer extends Application {
+
+    private static final String CONF_PATH = "/var/lib/candyrobot/DissPlayer.properties";
 
     public static final transient int PORT = 8888;
 
@@ -41,4 +48,21 @@ public class DissPlayer extends Application {
         launch(args);
     }
 
+    public static Properties getProperties() {
+        Properties properties = new Properties();
+        try {
+            InputStream stream = new FileInputStream(new File(DissPlayer.CONF_PATH));
+
+            try {
+                properties.load(stream);
+            } finally {
+                stream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        } finally {
+            return properties;
+        }
+    }
 }

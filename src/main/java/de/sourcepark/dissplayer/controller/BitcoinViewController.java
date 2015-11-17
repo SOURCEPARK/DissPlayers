@@ -5,8 +5,8 @@
  */
 package de.sourcepark.dissplayer.controller;
 
-
 import de.sourcepark.dissplayer.Context;
+import de.sourcepark.dissplayer.DissPlayer;
 import de.sourcepark.dissplayer.pojo.OrderClient;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -25,6 +25,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -55,8 +56,21 @@ public class BitcoinViewController implements Initializable {
     private static final String BTC_ADDRESS = "13cSu17oJ2dFX5mTGeMTh8N3UTPv2pN5CZ";
     private static final Double BTC_AMOUNT = 0.0001;
 
-    private static final String URL_QR_CODE = "http://localhost:1337/qr_code?btc_amount=%f&btc_receiver_address=%s";
-    private static final String URL_DETECT_PAYMENT = "http://localhost:1337/detect_payment?btc_amount=%f&btc_receiver_address=%s";
+    private static String HOST;
+    private static String PORT;
+    static {
+        try {
+            Properties properties = DissPlayer.getProperties();
+            HOST = properties.getProperty("bitcoin_host");
+            PORT = properties.getProperty("bitcoin_port");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final String URL_QR_CODE = "http://" + HOST + ":" + PORT + "/qr_code?btc_amount=%f&btc_receiver_address=%s";
+    private static final String URL_DETECT_PAYMENT = "http://" + HOST + ":" + PORT + "/detect_payment?btc_amount=%f&btc_receiver_address=%s";
 
     private static final String SERVER_OK = "payment received";
     private static final String SERVER_PAYMENT_TIMEOUT_PREFIX = "payment not received in time";
