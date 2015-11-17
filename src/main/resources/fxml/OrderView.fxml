@@ -100,7 +100,7 @@
                         <Font size="30.0" />
                     </font>
                 </TextField>
-                <ImageView fitHeight="39.0" fitWidth="29.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#maintenance" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="39.0" fitWidth="29.0" layoutX="558.0" layoutY="15.0" onMouseClicked="#maintenance" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../img/maintenance.png" />
                     </image>

@@ -1,5 +1,6 @@
 package de.sourcepark.dissplayer;
 
+import de.sourcepark.dissplayer.controller.StartPageController;
 import de.sourcepark.services.DissplayerServer;
 import de.sourcepark.services.AuthService;
 import javafx.application.Application;
@@ -18,14 +19,17 @@ public class DissPlayer extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StartPage.fxml"));
+        Parent root = (Parent)fxmlLoader.load();
 
         Scene scene = new Scene(root);
+        
         final DissplayerServer server = new DissplayerServer();
-        server.startServer(PORT, new AuthService());
-//        stage.setHeight(640);
-//        stage.setWidth(1024);
-//stage.setFullScreen(true);
+        AuthService authService = new AuthService();
+        authService.addObserver((StartPageController)fxmlLoader.getController());
+        
+        server.startServer(PORT, authService);
+
         stage.setScene(scene);
         stage.show();
     }

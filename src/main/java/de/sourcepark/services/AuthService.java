@@ -81,12 +81,20 @@ public class AuthService extends CandyService {
                     System.out.println("ErrorMessage: ");
                     user.setCardId("unknown");
                 }
-            } catch (ClientHandlerException | UniformInterfaceException ex) {                
+            } catch (ClientHandlerException | UniformInterfaceException ex) {
                 System.out.println(Arrays.toString(ex.getStackTrace()));
             } catch (IOException ex) {
                 ErrorCode errorCode = mapper.readValue(responseString, ErrorCode.class);
                 System.out.println(errorCode.getErrorMessage());
+                if (countObservers() > 0) {
+                    setChanged();
+                    notifyObservers(errorCode);
+                }
                 return errorCode.getErrorMessage();
+            }
+            if (countObservers() > 0) {
+                setChanged();
+                notifyObservers(user);
             }
 
             return user.getCardId();

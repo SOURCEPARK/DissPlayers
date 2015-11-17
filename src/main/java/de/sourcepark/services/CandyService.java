@@ -1,6 +1,7 @@
 package de.sourcepark.services;
 
 import java.util.Map;
+import java.util.Observable;
 
 /**
  * The CandyService class is the abstract base class for all candy services.
@@ -9,7 +10,7 @@ import java.util.Map;
  * given URLs.
  * @author smatyba
  */
-public abstract class CandyService {
+public abstract class CandyService extends Observable{
     /**
      * This service's name.
      */

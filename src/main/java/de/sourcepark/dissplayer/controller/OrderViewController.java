@@ -13,6 +13,7 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import de.sourcepark.dissplayer.DissPlayer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -95,9 +96,10 @@ public class OrderViewController implements Initializable {
     }
 
     @FXML
-    private void cancel() {
+    private void cancel() throws Exception {
         Stage stage;
         Parent root = null;
+        
         System.out.println("Auth selected");
         stage = (Stage) cancelButton.getScene().getWindow();
         //load up OTHER FXML document
@@ -108,7 +110,6 @@ public class OrderViewController implements Initializable {
         //create a new scene with root and set the stage
         Scene scene = new Scene(root);
         stage.setScene(scene);
-
         stage.show();
     }
 
