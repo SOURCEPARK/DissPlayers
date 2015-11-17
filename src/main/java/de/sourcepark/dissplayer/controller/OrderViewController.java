@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import de.sourcepark.dissplayer.Context;
+import de.sourcepark.dissplayer.pojo.OrderClient;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,8 +42,6 @@ import javax.ws.rs.core.UriBuilderException;
  */
 public class OrderViewController implements Initializable {
 
-    //REST URL
-    private static final String REST_URL = "http://localhost:9999/control/order/";
     @FXML
     private TextField orderNumber;
     @FXML
@@ -95,8 +94,11 @@ public class OrderViewController implements Initializable {
 
             if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin)
                 showBitcoinView();
-            else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card)
-                callOrderService(orderNumber.getText());
+            else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
+                String errMsg = OrderClient.callOrderService(orderNumber.getText());
+                if (errMsg != null)
+                    errorMessage.setText(errMsg);
+            }
         }
         mainPane.setDisable(false);
     }
@@ -155,40 +157,6 @@ public class OrderViewController implements Initializable {
         stage.setScene(scene);
 
         stage.show();
-    }
-
-    /*
-     Call order REST Service
-     */
-    private void callOrderService(String value) throws ClientHandlerException, IllegalArgumentException, UniformInterfaceException, UriBuilderException {
-        ClientConfig config = new DefaultClientConfig();
-        Client client = Client.create(config);
-        WebResource webResource = client.resource(UriBuilder.fromUri(REST_URL + value).build());
-
-//        MultivaluedMap formData = new MultivaluedMapImpl();
-//        formData.add("name1", value);
-        try {
-            ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
-            ObjectMapper mapper = new ObjectMapper();
-            String responseText = response.getEntity(String.class);
-            if (responseText.equals("OK")) {
-                System.out.println("Response: " + responseText);
-                //TODO: response seite für alles hat funktioniert
-            } else {
-                try {
-                    ErrorCode errorCode = mapper.readValue(responseText, ErrorCode.class);
-                    System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
-                    errorMessage.setText(errorCode.getErrorMessage());
-                } catch (IOException ex) {
-                    System.out.println("Error on errorcode handling");
-                    ex.printStackTrace();
-                }
-            }
-        } catch (ClientHandlerException | UniformInterfaceException ex) {
-            System.out.println(Arrays.toString(ex.getStackTrace()));
-            errorMessage.setText("Service nicht erreichbar");
-        }
-
     }
 
     private static String removeLastChar(String str) {

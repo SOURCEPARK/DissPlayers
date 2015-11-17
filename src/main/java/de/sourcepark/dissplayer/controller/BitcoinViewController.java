@@ -7,6 +7,7 @@ package de.sourcepark.dissplayer.controller;
 
 
 import de.sourcepark.dissplayer.Context;
+import de.sourcepark.dissplayer.pojo.OrderClient;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,11 +71,13 @@ public class BitcoinViewController implements Initializable {
             Double btcAmount = getBtcAmount();
 
             try {
-                if (awaitPayment(btcAddress, btcAmount))
-                    updateMessage(MSG_SUCCESS);
-
-                    // TODO: drop candy!!
-                else
+                if (awaitPayment(btcAddress, btcAmount)) {
+                    String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
+                    if (orderServiceErrMsg != null)
+                        updateMessage(orderServiceErrMsg);
+                    else
+                        updateMessage(MSG_SUCCESS);
+                } else
                     updateMessage(MSG_FAILURE);
             } catch (Exception e) {
                 updateMessage(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
