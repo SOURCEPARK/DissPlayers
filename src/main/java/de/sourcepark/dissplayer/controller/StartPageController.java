@@ -6,6 +6,8 @@
 package de.sourcepark.dissplayer.controller;
 
 import de.sourcepark.services.User;
+
+import de.sourcepark.dissplayer.Context;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
@@ -39,6 +41,9 @@ public class StartPageController implements Initializable, Observer {
     private ImageView rfid;
 
     @FXML
+    private ImageView bitcoinImg;
+
+    @FXML
     private Text errorMessage;
 
     @FXML
@@ -56,7 +61,7 @@ public class StartPageController implements Initializable, Observer {
     private void exit() {
         System.out.println("Exit gewählt");
         Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();        
+        stage.close();
     }
 
     @FXML
@@ -83,6 +88,28 @@ public class StartPageController implements Initializable, Observer {
             }
         });
 
+    }
+
+    public void activateBitcoinMode() {
+        Context.getInstance().setPaymentType(Context.PaymentType.Bitcoin);
+        openOrderView();
+    }
+
+    @FXML
+    public void openOrderView() {
+        Parent root = null;
+        Stage stage = (Stage) bitcoinImg.getScene().getWindow();
+
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/OrderView.fxml"));
+        } catch (IOException io) {
+        }
+
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+
+        stage.show();
     }
 
     /*

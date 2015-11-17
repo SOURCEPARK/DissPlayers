@@ -13,11 +13,12 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import de.sourcepark.dissplayer.DissPlayer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+
+import de.sourcepark.dissplayer.Context;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -90,16 +91,41 @@ public class OrderViewController implements Initializable {
     public void orderCandy() {
         mainPane.setDisable(true);
         if (orderNumber.getText().length() == 2) {
-            callOrderService(orderNumber.getText());
+            Context.getInstance().setActiveOrderNumber(orderNumber.getText());
+
+            if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin)
+                showBitcoinView();
+            else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card)
+                callOrderService(orderNumber.getText());
         }
         mainPane.setDisable(false);
+    }
+
+    @FXML
+    private void showBitcoinView() {
+        Parent root = null;
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+
+        //load up OTHER FXML document
+        try {
+            URL bitcoinViewFxml = getClass().getResource("/fxml/BitcoinView.fxml");
+            root = FXMLLoader.load(bitcoinViewFxml);
+            //create a new scene with root and set the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.show();
+        } catch (IOException io) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void cancel() throws Exception {
         Stage stage;
         Parent root = null;
-        
+
         System.out.println("Auth selected");
         stage = (Stage) cancelButton.getScene().getWindow();
         //load up OTHER FXML document
@@ -110,6 +136,7 @@ public class OrderViewController implements Initializable {
         //create a new scene with root and set the stage
         Scene scene = new Scene(root);
         stage.setScene(scene);
+
         stage.show();
     }
 
