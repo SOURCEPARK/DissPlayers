@@ -19,6 +19,8 @@ public class User {
     private String cardId;
     
     private String salutation;
+    
+    private boolean maintenanceStaff;
 
     public User() {
     }
@@ -77,6 +79,20 @@ public class User {
      */
     public void setSalutation(String salutation) {
         this.salutation = salutation;
+    }
+
+    /**
+     * @return the maintenanceStaff
+     */
+    public boolean isMaintenanceStaff() {
+        return maintenanceStaff;
+    }
+
+    /**
+     * @param maintenanceStaff the maintenanceStaff to set
+     */
+    public void setMaintenanceStaff(boolean maintenanceStaff) {
+        this.maintenanceStaff = maintenanceStaff;
     }
 
 }
