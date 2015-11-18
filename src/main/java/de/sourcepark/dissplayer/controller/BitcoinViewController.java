@@ -24,9 +24,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * FXML Controller class
@@ -47,8 +45,6 @@ public class BitcoinViewController implements Initializable {
     private static final String FXML_RESOURCE = "/fxml/StartPage.fxml";
 
     private static final String MSG_WELCOME = "Bitte scanne den QR-Code mit deiner mobilen Bitcoin-Wallet-App und schließe den Bezahlvorgang dort ab.";
-    private static final String MSG_SUCCESS = "Zahlung erhalten";
-    private static final String MSG_FAILURE = "Zahlung ist nicht erfolgt";
     private static final String MSG_BITCOIN_SERVER_OFFLINE = "Bitcoin-Payment-Server ist nicht erreichbar";
     private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler: %s";
 
@@ -72,10 +68,32 @@ public class BitcoinViewController implements Initializable {
     private static final String URL_QR_CODE = "http://" + HOST + ":" + PORT + "/qr_code?btc_amount=%f&btc_receiver_address=%s";
     private static final String URL_DETECT_PAYMENT = "http://" + HOST + ":" + PORT + "/detect_payment?btc_amount=%f&btc_receiver_address=%s";
 
-    private static final String SERVER_OK = "payment received";
-    private static final String SERVER_PAYMENT_TIMEOUT_PREFIX = "payment not received in time";
-
     private static final int MSG_SHOW_TIME = 5000; // ms
+
+    private enum PaymentResult {
+        Ok,
+        PAYMENT_INSUFFICIENT,
+        TIMEOUT,
+        BACKEND_ERROR,
+        UNKNOWN_ERROR
+    }
+
+    private static final Map<PaymentResult, String> PAYMENT_RESULT_MESSAGES = new HashMap<PaymentResult, String>();
+    static {
+        PAYMENT_RESULT_MESSAGES.put(PaymentResult.Ok, "Zahlung erhalten");
+        PAYMENT_RESULT_MESSAGES.put(PaymentResult.PAYMENT_INSUFFICIENT, "Zahlung ungenügend");
+        PAYMENT_RESULT_MESSAGES.put(PaymentResult.TIMEOUT, "Kein Zahlungseingang");
+        PAYMENT_RESULT_MESSAGES.put(PaymentResult.BACKEND_ERROR, "Unbekannter Fehler im Bitcoin-Backend");
+        PAYMENT_RESULT_MESSAGES.put(PaymentResult.UNKNOWN_ERROR, "Fehlerhafte Antwort vom Bitcoin-Backend");
+    }
+
+    private static final Map<String, PaymentResult> PAYMENT_SERVER_RESULT_MAP = new HashMap<String, PaymentResult>();
+    static {
+        PAYMENT_SERVER_RESULT_MAP.put("Ok", PaymentResult.Ok);
+        PAYMENT_SERVER_RESULT_MAP.put("InsufficientAmount", PaymentResult.PAYMENT_INSUFFICIENT);
+        PAYMENT_SERVER_RESULT_MAP.put("Timeout", PaymentResult.TIMEOUT);
+        PAYMENT_SERVER_RESULT_MAP.put("BackendError", PaymentResult.BACKEND_ERROR);
+    }
 
     Task<Void> awaitPaymentTask = new Task<Void>() {
         @Override protected Void call() throws Exception {
@@ -84,21 +102,18 @@ public class BitcoinViewController implements Initializable {
             String btcAddress = getBtcAddress();
             Double btcAmount = getBtcAmount();
 
-            try {
-                if (awaitPayment(btcAddress, btcAmount)) {
-                    String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
-                    if (orderServiceErrMsg != null)
-                        updateMessage(orderServiceErrMsg);
-                    else
-                        updateMessage(MSG_SUCCESS);
-                } else
-                    updateMessage(MSG_FAILURE);
-            } catch (Exception e) {
-                updateMessage(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
-            } finally {
-                Thread.sleep(MSG_SHOW_TIME);
-                return null;
+            PaymentResult paymentResult = awaitPayment(btcAddress, btcAmount);
+            String resultMsg = PAYMENT_RESULT_MESSAGES.get(paymentResult);
+            if (paymentResult == PaymentResult.Ok) {
+                String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
+                if (orderServiceErrMsg != null)
+                    resultMsg = orderServiceErrMsg;
             }
+
+            updateMessage(resultMsg);
+
+            Thread.sleep(MSG_SHOW_TIME);
+            return null;
         }
     };
 
@@ -152,7 +167,9 @@ public class BitcoinViewController implements Initializable {
         return BTC_AMOUNT;
     }
 
-    protected boolean awaitPayment(String address, Double amount) throws Exception {
+    protected PaymentResult awaitPayment(String address, Double amount) throws Exception {
+        PaymentResult paymentResult = PaymentResult.UNKNOWN_ERROR;
+
         try {
             URL url = new URL(
                     String.format(Locale.US, URL_DETECT_PAYMENT, amount, address)
@@ -171,21 +188,16 @@ public class BitcoinViewController implements Initializable {
                 sb.append(line);
             }
 
-            String body = sb.toString();
-            if (body.equals(SERVER_OK))
-                return true;
-            else if (body.startsWith(SERVER_PAYMENT_TIMEOUT_PREFIX))
-                return false;
-            else {
-                System.out.println(String.format("Bitcoin-Payment Server Error: %s", body));
-                throw new Exception("Bitcoin-Payment Server-Fehler");
-            }
+            String resultCode = sb.toString();
+
+            paymentResult = PAYMENT_SERVER_RESULT_MAP.getOrDefault(resultCode, PaymentResult.UNKNOWN_ERROR);
         } catch (Exception e) {
             e.printStackTrace();
-            throw e;
         } finally {
             Context.getInstance().setPaymentType(null);
             Context.getInstance().setActiveOrderNumber(null);
+
+            return paymentResult;
         }
     }
 
