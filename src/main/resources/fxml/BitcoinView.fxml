@@ -15,12 +15,32 @@
                         <Font size="20.0" />
                     </font>
                 </Button>
-            <Label fx:id="msg" layoutX="50.0" layoutY="82.0" prefHeight="237.0" prefWidth="525.0" text="" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Label fx:id="msg" alignment="CENTER" contentDisplay="CENTER" layoutX="39.0" layoutY="71.0" prefHeight="237.0" prefWidth="525.0" text="" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
                   <Font size="30.0" />
                </font>
             </Label>
-            <ImageView fx:id="qrCode" fitHeight="358.0" fitWidth="359.0" layoutX="122.0" layoutY="387.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="qrCode" fitHeight="358.0" fitWidth="359.0" layoutX="122.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true" />
+            <Label layoutX="111.0" layoutY="354.0" text="Euro" textFill="#d6d6d6">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="340.0" layoutY="354.0" text="mBTC" textFill="#d6d6d6">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="mBtc" layoutX="419.0" layoutY="354.0" textFill="WHITE">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="euro" layoutX="178.0" layoutY="354.0" textFill="WHITE">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
             </children>
         </AnchorPane>
     </children>
