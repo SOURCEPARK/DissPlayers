@@ -10,12 +10,12 @@
     <children>
         <AnchorPane id="AnchorPane" fx:id="mainPane" layoutX="199.0" layoutY="-198.0" prefHeight="1000.0" prefWidth="603.0" rotate="90.0" style="-fx-background-color: #04ACE9;"> 
             <children>
-                <Button fx:id="orderButton" disable="true" layoutX="386.0" layoutY="868.0" mnemonicParsing="false" onAction="#orderCandy" style="-fx-background-color: #04ACE9;" text="OK" textAlignment="RIGHT" textFill="WHITE" underline="true" GridPane.columnIndex="1">
+                <Button fx:id="orderButton" disable="true" layoutX="386.0" layoutY="868.0" mnemonicParsing="false" onAction="#orderCandy" prefHeight="121.0" prefWidth="114.0" style="-fx-background-color: #04ACE9;" text="OK" textAlignment="RIGHT" textFill="WHITE" underline="true" GridPane.columnIndex="1">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Button>
-                <Button fx:id="cancelButton" layoutX="78.0" layoutY="868.0" mnemonicParsing="false" onAction="#cancel" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #04ACE9;;" text="Abbrechen" textFill="WHITE" underline="true">
+                <Button fx:id="cancelButton" layoutX="78.0" layoutY="868.0" mnemonicParsing="false" onAction="#cancel" prefHeight="114.0" prefWidth="177.0" style="-fx-background-color: #04ACE9;;" text="Abbrechen" textFill="WHITE" underline="true">
                     <font>
                         <Font size="20.0" />
                     </font>
@@ -33,12 +33,12 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="134.0" prefWidth="121.0" style="-fx-background-color: #04ACE9;;" text="1" textAlignment="CENTER" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="176.0" prefWidth="170.0" style="-fx-background-color: #04ACE9; background-image: url(&quot;img/kreis.png&quot;);;" text="1" textAlignment="CENTER" textFill="WHITE">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="131.0" prefWidth="142.0" style="-fx-background-color: #04ACE9;;" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="190.0" prefWidth="181.0" style="-fx-background-color: #04ACE9;;" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
@@ -48,17 +48,17 @@
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="91.0" prefWidth="142.0" style="-fx-background-color: #04ACE9;;" text="4" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="1">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="179.0" prefWidth="155.0" style="-fx-background-color: #04ACE9;;" text="4" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="1">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="101.0" prefWidth="137.0" style="-fx-background-color: #04ACE9;;" text="5" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="182.0" prefWidth="176.0" style="-fx-background-color: #04ACE9;;" text="5" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="126.0" prefWidth="156.0" style="-fx-background-color: #04ACE9;;" text="6" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="177.0" prefWidth="160.0" style="-fx-background-color: #04ACE9;;" text="6" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
@@ -68,29 +68,29 @@
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="123.0" prefWidth="179.0" style="-fx-background-color: #04ACE9;;" text="8" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="159.0" prefWidth="157.0" style="-fx-background-color: #04ACE9;;" text="8" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="108.0" prefWidth="140.0" style="-fx-background-color: #04ACE9;;" text="9" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                        <Button mnemonicParsing="false" onAction="#addNumber" prefHeight="161.0" prefWidth="177.0" style="-fx-background-color: #04ACE9;;" text="9" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button layoutX="198.0" layoutY="137.0" mnemonicParsing="false" onAction="#addNumber" prefHeight="108.0" prefWidth="140.0" style="-fx-background-color: #04ACE9;;" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <Button layoutX="198.0" layoutY="137.0" mnemonicParsing="false" onAction="#addNumber" prefHeight="191.0" prefWidth="162.0" style="-fx-background-color: #04ACE9;;" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <font>
                                 <Font name="System Bold" size="40.0" />
                             </font>
                         </Button>
-                        <Button layoutX="339.0" layoutY="211.0" mnemonicParsing="false" onAction="#clearLastNumber" prefHeight="87.0" prefWidth="95.0" style="-fx-background-color: #04ACE9;;" text="del" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                        <Button layoutX="339.0" layoutY="211.0" mnemonicParsing="false" onAction="#clearLastNumber" prefHeight="207.0" prefWidth="175.0" style="-fx-background-color: #04ACE9;;" text="del" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3">
                             <font>
                                 <Font name="System Bold" size="24.0" />
                             </font>
                         </Button>
                     </children>
                 </GridPane>
-                <Text fx:id="errorMessage" layoutX="53.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="327.205078125">
+                <Text fx:id="errorMessage" layoutX="95.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="392.205078125">
                     <font>
                         <Font size="22.0" />
                     </font>
@@ -100,7 +100,7 @@
                         <Font size="30.0" />
                     </font>
                 </TextField>
-                <ImageView fitHeight="39.0" fitWidth="29.0" layoutX="558.0" layoutY="15.0" onMouseClicked="#maintenance" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="maintenance" fitHeight="90.0" fitWidth="65.0" layoutX="516.0" layoutY="16.0" onMouseClicked="#maintenance" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../img/maintenance.png" />
                     </image>

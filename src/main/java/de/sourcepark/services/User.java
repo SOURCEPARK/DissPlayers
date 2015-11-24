@@ -21,8 +21,11 @@ public class User {
     private String salutation;
     
     private boolean maintenanceStaff;
+    
+    private long ttl;
 
     public User() {
+        this.ttl = System.currentTimeMillis();
     }
     
     
@@ -95,4 +98,10 @@ public class User {
         this.maintenanceStaff = maintenanceStaff;
     }
 
+    /**
+     * @return the ttl
+     */
+    public long getTtl() {
+        return ttl;
+    }
 }

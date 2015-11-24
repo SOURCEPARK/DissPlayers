@@ -8,6 +8,7 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import de.sourcepark.dissplayer.Context;
 import java.io.IOException;
 import java.util.Arrays;
 import javafx.event.ActionEvent;
@@ -46,7 +47,7 @@ public class MaintenanceViewController {
     private ProgressBar progressBar;
     @FXML
     private TextArea logText;
-    
+
     /*
      Call REST Services for maintenance
      */
@@ -54,7 +55,7 @@ public class MaintenanceViewController {
         ClientConfig config = new DefaultClientConfig();
         Client client = Client.create(config);
         WebResource webResource = client.resource(UriBuilder.fromUri(uri).build());
-        
+
         try {
             ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
             ObjectMapper mapper = new ObjectMapper();
@@ -65,7 +66,7 @@ public class MaintenanceViewController {
                 try {
                     ErrorCode errorCode = mapper.readValue(responseText, ErrorCode.class);
                     System.out.println("ErrorMessage: " + errorCode.getErrorMessage());
-                    logText.appendText(errorCode.getErrorMessage()+"\n");
+                    logText.appendText(errorCode.getErrorMessage() + "\n");
                 } catch (IOException ex) {
                     System.out.println("mapper exception");
                 }
@@ -73,7 +74,7 @@ public class MaintenanceViewController {
         } catch (ClientHandlerException | UniformInterfaceException ex) {
             System.out.println(Arrays.toString(ex.getStackTrace()));
             logText.appendText("Service nicht erreichbar");
-        } 
+        }
 
     }
 
@@ -83,12 +84,12 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Test-Auswurf gestartet für Fach: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"order/"+inputField.getText());
+            callMaintenanceService(BASIS_REST_URL + "order/" + inputField.getText());
             logText.appendText("Test-Auswurf beendet" + "\n");
         } else {
             logText.appendText("Test-Auswurf gestartet für Fach: ungültige Eingabe\n");
         }
-               
+
     }
 
     @FXML
@@ -97,7 +98,7 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Kalibration gestartet für Fach: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"calibrate/"+inputField.getText());
+            callMaintenanceService(BASIS_REST_URL + "calibrate/" + inputField.getText());
             logText.appendText("Kalibration beendet" + "\n");
         } else {
             logText.appendText("Kalibration gestartet für Fach: ungültige Eingabe\n");
@@ -110,7 +111,7 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Motortest gestartet für Fach: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"motor/"+inputField.getText());
+            callMaintenanceService(BASIS_REST_URL + "motor/" + inputField.getText());
             logText.appendText("Motortest beendet" + "\n");
         } else {
             logText.appendText("Motortest gestartet für Fach: ungültige Eingabe\n");
@@ -122,7 +123,7 @@ public class MaintenanceViewController {
         System.out.println("Alle Motoren aus gestartet");
         logText.setWrapText(true);
         logText.appendText("Alle Motoren werden ausgeschaltet..." + "\n");
-        callMaintenanceService(BASIS_REST_URL+"alloff");
+        callMaintenanceService(BASIS_REST_URL + "alloff");
         logText.appendText("Alle Motoren erfolgreich ausgeschaltet." + "\n");
     }
 
@@ -132,7 +133,7 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Step gestartet für Fach: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"step/"+inputField.getText());
+            callMaintenanceService(BASIS_REST_URL + "step/" + inputField.getText());
             logText.appendText("Step beendet" + "\n");
         } else {
             logText.appendText("Step gestartet für Fach: ungültige Eingabe\n");
@@ -145,8 +146,8 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Col-Test gestartet (Stromversorgung für Spalte) für Spalte: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"colon/"+inputField.getText());
-            logText.appendText("Spalte " + inputField.getText() +" mit Strom versorgt. Beenden mit All Off.\n");
+            callMaintenanceService(BASIS_REST_URL + "colon/" + inputField.getText());
+            logText.appendText("Spalte " + inputField.getText() + " mit Strom versorgt. Beenden mit All Off.\n");
         } else {
             logText.appendText("Col-Test gestartet (Stromversorgung für Spalte) für Spalte: ungültige Eingabe\n");
         }
@@ -158,8 +159,8 @@ public class MaintenanceViewController {
         logText.setWrapText(true);
         if (inputField.getText().length() == 2) {
             logText.appendText("Row-Test gestartet (Stromversorgung für Reihe) für Reihe: " + inputField.getText() + "\n");
-            callMaintenanceService(BASIS_REST_URL+"rowon/"+inputField.getText());
-            logText.appendText("Reihe " + inputField.getText() +" mit Strom versorgt. Beenden mit All Off.\n");
+            callMaintenanceService(BASIS_REST_URL + "rowon/" + inputField.getText());
+            logText.appendText("Reihe " + inputField.getText() + " mit Strom versorgt. Beenden mit All Off.\n");
         } else {
             logText.appendText("Row-Test gestartet (Stromversorgung für Reihe) für Reihe: ungültige Eingabe\n");
         }
@@ -209,6 +210,14 @@ public class MaintenanceViewController {
             root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
         } catch (IOException io) {
         }
+
+        ClientConfig config = new DefaultClientConfig();
+        Client client = Client.create(config);
+        WebResource webResource = client.resource(UriBuilder.fromUri(BASIS_REST_URL + "maintenanceMode").build());
+        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+        String responseText = response.getEntity(String.class);
+
+        Context.getInstance().setActiveUser(null);
         //create a new scene with root and set the stage
         Scene scene = new Scene(root);
         stage.setScene(scene);

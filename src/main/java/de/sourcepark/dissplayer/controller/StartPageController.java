@@ -8,6 +8,9 @@ package de.sourcepark.dissplayer.controller;
 import de.sourcepark.services.User;
 
 import de.sourcepark.dissplayer.Context;
+import static de.sourcepark.dissplayer.DissPlayer.PORT;
+import de.sourcepark.services.AuthService;
+import de.sourcepark.services.DissplayerServer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
@@ -72,7 +75,7 @@ public class StartPageController implements Initializable, Observer {
                 //Parent root = null;
 
                 System.out.println("Auth selected");
-
+                Context.getInstance().setPaymentType(Context.PaymentType.Card);
                 //load up OTHER FXML document
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/fxml/OrderView.fxml"));
@@ -125,6 +128,7 @@ public class StartPageController implements Initializable, Observer {
     public void update(Observable o, Object arg) {
         try {
             User user = (User) arg;
+            Context.getInstance().setActiveUser(user);
             System.out.println(user.getCardId());
             authentificate();
         } catch (Exception ex) {
