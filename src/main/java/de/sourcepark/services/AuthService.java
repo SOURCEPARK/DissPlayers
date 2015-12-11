@@ -29,7 +29,7 @@ import spark.Response;
 public class AuthService extends CandyService {
 
     //REST URL
-    private static final String REST_URL = "http://localhost:9999/control/authorize/";
+    public static final String REST_URL = "http://localhost:9999/control/authorize/";
 
     /**
      * Initializes a new instance of the ExampleCandyService class.

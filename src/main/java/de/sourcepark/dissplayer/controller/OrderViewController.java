@@ -5,17 +5,19 @@
  */
 package de.sourcepark.dissplayer.controller;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import de.sourcepark.dissplayer.Context;
 import de.sourcepark.dissplayer.pojo.OrderClient;
+import de.sourcepark.services.AuthService;
+import de.sourcepark.services.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +30,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
@@ -37,6 +42,8 @@ import javax.ws.rs.core.UriBuilder;
  * @author cjelinski
  */
 public class OrderViewController implements Initializable {
+
+    private static final transient Logger LOG = LoggerFactory.getLogger(OrderViewController.class);
 
     private final String MAINTENANCESERVICE = "http://localhost:9999/control/";
 
@@ -55,11 +62,16 @@ public class OrderViewController implements Initializable {
     @FXML
     private ImageView maintenance;
 
-    @Override
+    @FXML
     public void initialize(URL url, ResourceBundle rb) {
-        errorMessage.setText("Hello: " + Context.getInstance().getActiveUser().getNickname());
-        System.out.println("login time: " + Context.getInstance().getActiveUser().getTtl());
-        maintenance.setVisible(Context.getInstance().getActiveUser().isMaintenanceStaff());
+        if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
+            String errorText = "Hello: " +
+                    Context.getInstance().getActiveUser().getNickname();
+
+            errorMessage.setText(errorText);
+            System.out.println("login time: " + Context.getInstance().getActiveUser().getTtl());
+            maintenance.setVisible(Context.getInstance().getActiveUser().isMaintenanceStaff());
+        }
     }
 
     @FXML
@@ -90,23 +102,47 @@ public class OrderViewController implements Initializable {
 
     @FXML
     public void orderCandy() throws Exception {
-        if (isNotOutOfTime()) {
-            mainPane.setDisable(true);
-            if (orderNumber.getText().length() == 2) {
-                Context.getInstance().setActiveOrderNumber(orderNumber.getText());
+        mainPane.setDisable(true);
+        if (orderNumber.getText().length() == 2) {
+            Context.getInstance().setActiveOrderNumber(orderNumber.getText());
 
-                if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin) {
-                    showBitcoinView();
-                } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
-                    String errMsg = OrderClient.callOrderService(orderNumber.getText());
-                    if (errMsg != null) {
-                        errorMessage.setText(errMsg);
-                    }
+            if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin) {
+                createBitcoinSession();
+                showBitcoinView();
+            } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card &&
+                    isNotOutOfTime()) {
+                String errMsg = OrderClient.callOrderService(orderNumber.getText());
+                if (errMsg != null) {
+                    errorMessage.setText(errMsg);
                 }
             }
-            mainPane.setDisable(false);
-            //navigate back to main scene
-            cancel();
+        }
+        mainPane.setDisable(false);
+        //navigate back to main scene
+        cancel();
+    }
+
+    private void createBitcoinSession() throws Exception {
+        ClientConfig config = new DefaultClientConfig();
+        Client client = Client.create(config);
+
+        User user = new User();
+        WebResource webResource = client.resource(UriBuilder.fromUri(AuthService.REST_URL + "bitcoin").build());
+        String responseString = "";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            ClientResponse responseAuth = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+
+            responseString = responseAuth.getEntity(String.class);
+            user = mapper.readValue(responseString, User.class);
+            if (user.getCardId().isEmpty()) {
+                throw new Exception("Bitcoin session could not be created due to Hubba-Bubba Error");
+            }
+
+            LOG.info("Bitcoin session created successfully");
+        } catch (ClientHandlerException | UniformInterfaceException ex) {
+            LOG.error(Arrays.toString(ex.getStackTrace()));
         }
     }
 

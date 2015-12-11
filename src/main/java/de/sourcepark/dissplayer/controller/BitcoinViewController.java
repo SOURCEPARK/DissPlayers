@@ -5,9 +5,15 @@
  */
 package de.sourcepark.dissplayer.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import de.sourcepark.dissplayer.Context;
 import de.sourcepark.dissplayer.DissPlayer;
+import de.sourcepark.dissplayer.exceptions.SlotNotFoundException;
 import de.sourcepark.dissplayer.pojo.OrderClient;
+import de.sourcepark.dissplayer.pojo.Slot;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +25,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
@@ -32,6 +42,8 @@ import java.util.*;
  * @author jnaperkowski
  */
 public class BitcoinViewController implements Initializable {
+
+    private static final transient Logger LOG = LoggerFactory.getLogger(BitcoinViewController.class);
 
     @FXML
     public ImageView qrCode;
@@ -53,10 +65,7 @@ public class BitcoinViewController implements Initializable {
     private static final String MSG_WELCOME = "Scanne den QR-Code mit deiner mobilen Bitcoin Wallet und sende den angezeigten Betrag.";
     private static final String MSG_BITCOIN_SERVER_OFFLINE = "Bitcoin-Payment-Server ist nicht erreichbar";
     private static final String MSG_UNKNOWN_ERROR = "unbekannter Fehler: %s";
-
-    // FIXME: temporary solution: fixed btc address/amount
-    private static final String BTC_ADDRESS = "13cSu17oJ2dFX5mTGeMTh8N3UTPv2pN5CZ";
-    private static final Double EUR_AMOUNT = 0.01;
+    private static final String MSG_SLOT_NOT_FOUND_ERROR = "Das gewählte Fach ist nicht befüllt!";
 
     private static String HOST;
     private static String PORT;
@@ -71,9 +80,12 @@ public class BitcoinViewController implements Initializable {
         }
     }
 
+    private static String HUBBA_BUBBA_PORT = "9999";
+
     private static final String URL_QR_CODE = "http://" + HOST + ":" + PORT + "/qr_code?btc_amount=%f&btc_receiver_address=%s";
     private static final String URL_DETECT_PAYMENT = "http://" + HOST + ":" + PORT + "/detect_payment?btc_amount=%f&btc_receiver_address=%s";
     private static final String URL_EXCHANGE_RATE = "http://" + HOST + ":" + PORT + "/exchange_rate?eur_amount=%f";
+    private static final String URL_SLOT_INFO = "http://" + HOST + ":" + HUBBA_BUBBA_PORT + "/control/slot/%s";
 
     private static final int MSG_SHOW_TIME = 5000; // ms
 
@@ -143,8 +155,9 @@ public class BitcoinViewController implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            String btcAddress = getBtcAddress();
-            Double euroAmount = getEuroAmount();
+            Slot slot = getSlotInfo(Context.getInstance().getActiveOrderNumber());
+            String btcAddress = getBtcAddress(slot);
+            Double euroAmount = getEuroAmount(slot);
             Double btcAmount = this.convertEuroToBtc(euroAmount);
 
             this.renderQrCode(btcAddress, btcAmount);
@@ -164,6 +177,8 @@ public class BitcoinViewController implements Initializable {
             awaitPaymentThread.start();
         } catch (ConnectException e) {
             msg.setText(MSG_BITCOIN_SERVER_OFFLINE);
+        } catch (SlotNotFoundException e) {
+            msg.setText(MSG_SLOT_NOT_FOUND_ERROR);
         } catch (Exception e) {
             msg.setText(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
             e.printStackTrace();
@@ -186,14 +201,38 @@ public class BitcoinViewController implements Initializable {
         }
     }
 
-    private String getBtcAddress() {
-        // TODO: implement btc address managemen/mapping from active orderNumber
-        return BTC_ADDRESS;
+    private String getBtcAddress(Slot slot) {
+        return slot.getBtcRcvAddress();
     }
 
-    private Double getEuroAmount() {
-        // TODO: implement euro amount management/mapping from active orderNumber
-        return EUR_AMOUNT;
+    private Double getEuroAmount(Slot slot) {
+        return Double.parseDouble(slot.getPrize());
+    }
+
+    private Slot getSlotInfo(String slotNo) throws Exception {
+        Slot slot;
+
+        ClientConfig config = new DefaultClientConfig();
+        Client client = Client.create(config);
+
+        String slotInfoUrl = String.format(URL_SLOT_INFO, slotNo);
+        WebResource webResource = client.resource(UriBuilder.fromUri(slotInfoUrl).build());
+        String responseString = "";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            ClientResponse responseAuth = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(ClientResponse.class);
+
+            responseString = responseAuth.getEntity(String.class);
+            slot = mapper.readValue(responseString, Slot.class);
+            if (!slot.isBtcAllowed() || slot.getErrorCode() != null)
+                throw new SlotNotFoundException();
+        } catch (Exception e) {
+            LOG.error(e.toString(), e);
+            throw e;
+        }
+
+        return slot;
     }
 
     protected PaymentResult awaitPayment(String address, Double amount) throws Exception {
