@@ -55,11 +55,16 @@ public class OrderViewController implements Initializable {
     @FXML
     private ImageView maintenance;
 
-    @Override
+    @FXML
     public void initialize(URL url, ResourceBundle rb) {
-        errorMessage.setText("Hello: " + Context.getInstance().getActiveUser().getNickname());
-        System.out.println("login time: " + Context.getInstance().getActiveUser().getTtl());
-        maintenance.setVisible(Context.getInstance().getActiveUser().isMaintenanceStaff());
+        if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
+            String errorText = "Hello: " +
+                    Context.getInstance().getActiveUser().getNickname();
+
+            errorMessage.setText(errorText);
+            System.out.println("login time: " + Context.getInstance().getActiveUser().getTtl());
+            maintenance.setVisible(Context.getInstance().getActiveUser().isMaintenanceStaff());
+        }
     }
 
     @FXML
@@ -90,24 +95,23 @@ public class OrderViewController implements Initializable {
 
     @FXML
     public void orderCandy() throws Exception {
-        if (isNotOutOfTime()) {
-            mainPane.setDisable(true);
-            if (orderNumber.getText().length() == 2) {
-                Context.getInstance().setActiveOrderNumber(orderNumber.getText());
+        mainPane.setDisable(true);
+        if (orderNumber.getText().length() == 2) {
+            Context.getInstance().setActiveOrderNumber(orderNumber.getText());
 
-                if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin) {
-                    showBitcoinView();
-                } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
-                    String errMsg = OrderClient.callOrderService(orderNumber.getText());
-                    if (errMsg != null) {
-                        errorMessage.setText(errMsg);
-                    }
+            if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin) {
+                showBitcoinView();
+            } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card &&
+                    isNotOutOfTime()) {
+                String errMsg = OrderClient.callOrderService(orderNumber.getText());
+                if (errMsg != null) {
+                    errorMessage.setText(errMsg);
                 }
             }
-            mainPane.setDisable(false);
-            //navigate back to main scene
-            cancel();
         }
+        mainPane.setDisable(false);
+        //navigate back to main scene
+        cancel();
     }
 
     @FXML
