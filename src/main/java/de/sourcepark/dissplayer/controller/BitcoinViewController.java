@@ -135,20 +135,25 @@ public class BitcoinViewController implements Initializable {
         }
 
         @Override protected Void call() throws Exception {
-            updateMessage(MSG_WELCOME);
+            try {
+                updateMessage(MSG_WELCOME);
 
-            PaymentResult paymentResult = awaitPayment(btcAddress, btcAmount);
-            String resultMsg = PAYMENT_RESULT_MESSAGES.get(paymentResult);
-            if (paymentResult == PaymentResult.Ok) {
-                String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
-                if (orderServiceErrMsg != null)
-                    resultMsg = orderServiceErrMsg;
+                PaymentResult paymentResult = awaitPayment(btcAddress, btcAmount);
+                String resultMsg = PAYMENT_RESULT_MESSAGES.get(paymentResult);
+                if (paymentResult == PaymentResult.Ok) {
+                    String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
+                    if (orderServiceErrMsg != null)
+                        resultMsg = orderServiceErrMsg;
+                }
+
+                updateMessage(resultMsg);
+
+                Thread.sleep(MSG_SHOW_TIME);
+                return null;
+            } finally {
+                Context.getInstance().setPaymentType(null);
+                Context.getInstance().setActiveOrderNumber(null);
             }
-
-            updateMessage(resultMsg);
-
-            Thread.sleep(MSG_SHOW_TIME);
-            return null;
         }
     }
 
@@ -249,9 +254,6 @@ public class BitcoinViewController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Context.getInstance().setPaymentType(null);
-            Context.getInstance().setActiveOrderNumber(null);
-
             return paymentResult;
         }
     }
