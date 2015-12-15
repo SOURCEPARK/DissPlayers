@@ -79,12 +79,13 @@ public class StartPageController implements Initializable, Observer {
                 //load up OTHER FXML document
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/fxml/OrderView.fxml"));
-                    Stage stage = (Stage) closeButton.getScene().getWindow();
+                    Stage stage = (Stage) rfid.getScene().getWindow();
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
 
                     stage.show();
                 } catch (IOException io) {
+                    io.printStackTrace();
                 }
                 //create a new scene with root and set the stage
 
