@@ -20,7 +20,11 @@ public class Slot {
 
     private boolean btcAllowed;
 
+    private boolean cardAllowed;
+
     private String btcRcvAddress;
+
+    private String itemsRemaining;
 
     private String errorCode;
 
@@ -36,56 +40,35 @@ public class Slot {
         return slotNo;
     }
 
-    public void setSlotNo(String slotNo) {
-        this.slotNo = slotNo;
-    }
-
     public String getPrize() {
         return prize;
-    }
-
-    public void setPrize(String prize) {
-        this.prize = prize;
     }
 
     public boolean isBtcAllowed() {
         return btcAllowed;
     }
 
-    public void setBtcAllowed(boolean btcAllowed) {
-        this.btcAllowed = btcAllowed;
+    public boolean isCardAllowed() {
+        return cardAllowed;
     }
 
     public String getBtcRcvAddress() {
         return btcRcvAddress;
     }
 
-    public void setBtcRcvAddress(String btcRcvAddress) {
-        this.btcRcvAddress = btcRcvAddress;
+    public String getItemsRemaining() {
+        return itemsRemaining;
     }
 
     public String getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public String getErrorName() {
         return errorName;
     }
-
-    public void setErrorName(String errorName) {
-        this.errorName = errorName;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
 }

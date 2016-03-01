@@ -65,7 +65,7 @@ public class BitcoinViewController implements Initializable {
     private static final String MSG_WELCOME = "Scanne den QR-Code mit deiner mobilen Bitcoin Wallet und sende den angezeigten Betrag.";
     private static final String MSG_BITCOIN_SERVER_OFFLINE = "Bitcoin-Payment-Server ist nicht erreichbar";
     private static final String MSG_UNKNOWN_ERROR = "unbekannter Fehler: %s";
-    private static final String MSG_SLOT_NOT_FOUND_ERROR = "Das gewählte Fach ist nicht befüllt!";
+    private static final String MSG_BITCOIN_NOT_ALLOWED = "Bitcoin-Zahlung ist für diesen Slot nicht erlaubt!";
 
     private static String HOST;
     private static String PORT;
@@ -183,7 +183,7 @@ public class BitcoinViewController implements Initializable {
         } catch (ConnectException e) {
             msg.setText(MSG_BITCOIN_SERVER_OFFLINE);
         } catch (SlotNotFoundException e) {
-            msg.setText(MSG_SLOT_NOT_FOUND_ERROR);
+            msg.setText(e.getMessage());
         } catch (Exception e) {
             msg.setText(String.format(MSG_UNKNOWN_ERROR, e.getMessage()));
             e.printStackTrace();
@@ -230,8 +230,10 @@ public class BitcoinViewController implements Initializable {
 
             responseString = responseAuth.getEntity(String.class);
             slot = mapper.readValue(responseString, Slot.class);
-            if (!slot.isBtcAllowed() || slot.getErrorCode() != null)
-                throw new SlotNotFoundException();
+            if (slot.getErrorCode() != null)
+                throw new SlotNotFoundException(slot.getErrorMessage());
+            if (!slot.isBtcAllowed())
+                throw new SlotNotFoundException(MSG_BITCOIN_NOT_ALLOWED);
         } catch (Exception e) {
             LOG.error(e.toString(), e);
             throw e;
