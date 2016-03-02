@@ -141,9 +141,15 @@ public class BitcoinViewController implements Initializable {
                 PaymentResult paymentResult = awaitPayment(btcAddress, btcAmount);
                 String resultMsg = PAYMENT_RESULT_MESSAGES.get(paymentResult);
                 if (paymentResult == PaymentResult.Ok) {
-                    String orderServiceErrMsg = OrderClient.callOrderService(Context.getInstance().getActiveOrderNumber());
+                    String slotNumber = Context.getInstance().getActiveOrderNumber();
+                    String orderServiceErrMsg = OrderClient.callOrderService(slotNumber);
+                    String slotDecreaseSlotItemCountServiceErrMsg = OrderClient.callDecreaseSlotItemCountService(slotNumber);
+
                     if (orderServiceErrMsg != null)
                         resultMsg = orderServiceErrMsg;
+
+                    if (slotDecreaseSlotItemCountServiceErrMsg != null)
+                        resultMsg = slotDecreaseSlotItemCountServiceErrMsg;
                 }
 
                 updateMessage(resultMsg);
