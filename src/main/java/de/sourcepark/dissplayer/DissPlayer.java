@@ -27,7 +27,7 @@ public class DissPlayer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StartPage.fxml"));
-        Parent root = (Parent)fxmlLoader.load();
+        Parent root = (Parent)fxmlLoader.load();        
 
         Scene scene = new Scene(root);
         

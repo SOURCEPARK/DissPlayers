@@ -190,20 +190,27 @@ public class BitcoinViewController implements Initializable {
         }
     }
 
-    @FXML
+     @FXML
     private void showStartPage() {
-        try {
-            Stage stage = (Stage) mainPane.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource(FXML_RESOURCE));
+        Stage stage;
+        Parent root = null;
 
-            //create a new scene with root and set the stage
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+        System.out.println("Auth selected");
+        stage = (Stage) mainPane.getScene().getWindow();
+        stage.close();
+//        //load up OTHER FXML document
+//        try {
+//            root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
+//        } catch (IOException io) {
+//        }
 
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //reset current user
+        Context.getInstance().setActiveUser(null);
+//        //create a new scene with root and set the stage
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//
+//        stage.show();
     }
 
     private String getBtcAddress(Slot slot) {

@@ -7,10 +7,12 @@ import de.sourcepark.services.User;
  */
 public class Context {
     private final static Context instance = new Context();
+    
 
     public static Context getInstance() {
         return instance;
     }
+
 
     public enum PaymentType {
         Card,
@@ -19,7 +21,7 @@ public class Context {
 
     private String activeOrderNumber;
     private PaymentType activePaymentType;
-    private User activeUser;
+    private User activeUser;    
 
     public String getActiveOrderNumber() {
         return this.activeOrderNumber;
@@ -49,4 +51,6 @@ public class Context {
     public void setActiveUser(User activeUser) {
         this.activeUser = activeUser;
     }
+
+
 }

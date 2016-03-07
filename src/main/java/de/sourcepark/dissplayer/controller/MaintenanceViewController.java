@@ -9,13 +9,13 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import de.sourcepark.dissplayer.Context;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -34,6 +34,7 @@ public class MaintenanceViewController {
 
     //REST URL
     private static final String BASIS_REST_URL = "http://localhost:9999/control/";
+    private static final String IP_CMD = "/sbin/ifconfig wlan0";
 
     @FXML
     private Label label;
@@ -76,6 +77,26 @@ public class MaintenanceViewController {
             logText.appendText("Service nicht erreichbar");
         }
 
+    }
+
+    @FXML
+    private void getIPAddress() {
+        System.out.println("get ip address for maintenance");
+        StringBuilder output = new StringBuilder();
+        try {
+            Process process;
+            process = Runtime.getRuntime().exec(IP_CMD);
+            process.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logText.appendText(output.toString());
     }
 
     @FXML
@@ -205,24 +226,27 @@ public class MaintenanceViewController {
         Stage stage;
         Parent root = null;
         stage = (Stage) cancelButton.getScene().getWindow();
-        //load up OTHER FXML document
-        try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
-        } catch (IOException io) {
-        }
-
-        ClientConfig config = new DefaultClientConfig();
-        Client client = Client.create(config);
-        WebResource webResource = client.resource(UriBuilder.fromUri(BASIS_REST_URL + "maintenanceMode").build());
-        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
-        String responseText = response.getEntity(String.class);
-
+        stage.close();
+        //reset current user
         Context.getInstance().setActiveUser(null);
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-
-        stage.show();
+//        //load up OTHER FXML document
+//        try {
+//            root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
+//        } catch (IOException io) {
+//        }
+//
+//        ClientConfig config = new DefaultClientConfig();
+//        Client client = Client.create(config);
+//        WebResource webResource = client.resource(UriBuilder.fromUri(BASIS_REST_URL + "maintenanceMode").build());
+//        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class);
+//        String responseText = response.getEntity(String.class);
+//
+//        Context.getInstance().setActiveUser(null);
+//        //create a new scene with root and set the stage
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//
+//        stage.show();
     }
 
 }

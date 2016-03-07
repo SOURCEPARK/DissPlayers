@@ -8,14 +8,12 @@ package de.sourcepark.dissplayer.controller;
 import de.sourcepark.services.User;
 
 import de.sourcepark.dissplayer.Context;
-import static de.sourcepark.dissplayer.DissPlayer.PORT;
-import de.sourcepark.services.AuthService;
-import de.sourcepark.services.DissplayerServer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +22,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -52,19 +52,28 @@ public class StartPageController implements Initializable, Observer {
     @FXML
     private String userID;
 
+    @FXML
+    private AnchorPane content;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("initialize StartPageController");
+//        AuthService.getInstance().deleteObservers();
+//        AuthService.getInstance().addObserver(this);
     }
 
     @FXML
     private void exit() {
         System.out.println("Exit gewählt");
-        Stage stage = (Stage) closeButton.getScene().getWindow();
+        Stage stage = getCurrentStage();
         stage.close();
+    }
+
+    public Stage getCurrentStage() {
+        return (Stage) rfid.getScene().getWindow();
     }
 
     @FXML
@@ -72,17 +81,23 @@ public class StartPageController implements Initializable, Observer {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                //Parent root = null;
-
-                System.out.println("Auth selected");
-                Context.getInstance().setPaymentType(Context.PaymentType.Card);
-                //load up OTHER FXML document
                 try {
+                    Context.getInstance().setPaymentType(Context.PaymentType.Card);
                     Parent root = FXMLLoader.load(getClass().getResource("/fxml/OrderView.fxml"));
-                    Stage stage = (Stage) rfid.getScene().getWindow();
+                    System.out.println("Auth selected");
+
+                    //FIXME: Only for debugging!
+                    if (Context.getInstance().getActiveUser() == null) {
+                        Context.getInstance().setActiveUser(new User());
+                    }
+
+                    //Stage stage = (Stage) rfid.getScene().getWindow();
+                    Stage stage = new Stage();
+
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
 
+                    //             waitingPanel.hide();
                     stage.show();
                 } catch (IOException io) {
                     io.printStackTrace();
@@ -102,7 +117,7 @@ public class StartPageController implements Initializable, Observer {
     @FXML
     public void openOrderView() {
         Parent root = null;
-        Stage stage = (Stage) bitcoinImg.getScene().getWindow();
+        Stage stage = new Stage();
 
         try {
             root = FXMLLoader.load(getClass().getResource("/fxml/OrderView.fxml"));
@@ -125,6 +140,32 @@ public class StartPageController implements Initializable, Observer {
         return retVal;
     }
 
+    @FXML
+    private void showNotAuthorizedSite() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Show not authorized Stage");
+                Parent root = null;
+                Stage stage = new Stage();
+
+                try {
+                    root = FXMLLoader.load(getClass().getResource("/fxml/NotAuthorizedDialog.fxml"));
+                } catch (IOException io) {
+                }
+
+                //create a new scene with root and set the stage
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+
+                stage.show();
+                PauseTransition delay = new PauseTransition(Duration.seconds(5));
+                delay.setOnFinished(event -> stage.close());
+                delay.play();
+            }
+        });
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         try {
@@ -136,6 +177,7 @@ public class StartPageController implements Initializable, Observer {
             ErrorCode errorCode = (ErrorCode) arg;
             System.out.println(errorCode.getErrorMessage());
             errorMessage.setText(errorCode.getErrorMessage());
+            showNotAuthorizedSite();
         }
     }
 }

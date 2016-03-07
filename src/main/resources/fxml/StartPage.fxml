@@ -8,9 +8,9 @@
 
 <Pane prefHeight="603.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
    <children>
-      <AnchorPane id="AnchorPane" layoutX="200.0" layoutY="-199.0" prefHeight="1018.0" prefWidth="619.0" rotate="90.0" style="-fx-background-color: #04ACE9;">
+      <AnchorPane id="AnchorPane" fx:id="content" layoutX="200.0" layoutY="-199.0" prefHeight="1018.0" prefWidth="619.0" rotate="90.0" style="-fx-background-color: #04ACE9;">
           <children>
-            <ImageView fx:id="rfid" fitHeight="404.0" fitWidth="432.0" layoutX="82.0" layoutY="181.0" onMouseClicked="#authentificate" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="rfid" fitHeight="404.0" fitWidth="432.0" layoutX="82.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/RFID_white.png" />
                </image>

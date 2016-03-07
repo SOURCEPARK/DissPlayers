@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-
 import de.sourcepark.dissplayer.Context;
 import de.sourcepark.dissplayer.pojo.OrderClient;
 import de.sourcepark.services.AuthService;
@@ -65,30 +64,41 @@ public class OrderViewController implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         if (Context.getInstance().getPaymentType() == Context.PaymentType.Card) {
-            String errorText = "Hello: " +
-                    Context.getInstance().getActiveUser().getNickname();
-
+            String errorText = "";
+            if (Context.getInstance().getActiveUser().getNickname() != null) {
+                errorText = "Hello: "
+                        + Context.getInstance().getActiveUser().getNickname();
+            }
             errorMessage.setText(errorText);
             System.out.println("login time: " + Context.getInstance().getActiveUser().getTtl());
             maintenance.setVisible(Context.getInstance().getActiveUser().isMaintenanceStaff());
+
+        }else{
+            maintenance.setVisible(false);
         }
+        
     }
 
     @FXML
     public void addNumber(ActionEvent event) {
-        Button buttonx = (Button) event.getSource();
-        String numberToAdd = buttonx.getText();
-        System.out.println("add a number " + numberToAdd);
-        if (orderNumber.getText().length() < 2) {
-            orderNumber.setText(orderNumber.getText().concat(numberToAdd));
+        try {
+            Button buttonx = (Button) event.getSource();
+            String numberToAdd = buttonx.getText();
+            System.out.println("add a number " + numberToAdd);
+            if (orderNumber.getText().length() < 2) {
+                orderNumber.setText(orderNumber.getText().concat(numberToAdd));
+            }
+            if (orderNumber.getText().length() == 2) {
+                orderButton.setDisable(false);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        if (orderNumber.getText().length() == 2) {
-            orderButton.setDisable(false);
-        }
+
     }
 
     @FXML
-    public void clearLastNumber() {
+    public void clearLastNumber(ActionEvent event) {
         if (!orderNumber.getText().isEmpty()) {
             orderNumber.setText(removeLastChar(orderNumber.getText()));
             orderButton.setDisable(true);
@@ -96,12 +106,12 @@ public class OrderViewController implements Initializable {
     }
 
     @FXML
-    public void clearAll() {
+    public void clearAll(ActionEvent event) {
         orderNumber.setText("");
     }
 
     @FXML
-    public void orderCandy() throws Exception {
+    public void orderCandy(ActionEvent event) throws Exception {
         mainPane.setDisable(true);
         if (orderNumber.getText().length() == 2) {
             Context.getInstance().setActiveOrderNumber(orderNumber.getText());
@@ -109,14 +119,15 @@ public class OrderViewController implements Initializable {
             if (Context.getInstance().getPaymentType() == Context.PaymentType.Bitcoin) {
                 createBitcoinSession();
                 showBitcoinView();
-            } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card &&
-                    isNotOutOfTime()) {
+            } else if (Context.getInstance().getPaymentType() == Context.PaymentType.Card
+                    && isNotOutOfTime()) {
                 String errMsg = OrderClient.callOrderService(orderNumber.getText());
                 if (errMsg != null) {
                     errorMessage.setText(errMsg);
                 }
             }
         }
+
         mainPane.setDisable(false);
         //navigate back to main scene
         cancel();
@@ -173,18 +184,20 @@ public class OrderViewController implements Initializable {
 
         System.out.println("Auth selected");
         stage = (Stage) cancelButton.getScene().getWindow();
-        //load up OTHER FXML document
-        try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
-        } catch (IOException io) {
-        }
+        stage.close();
+//        //load up OTHER FXML document
+//        try {
+//            root = FXMLLoader.load(getClass().getResource("/fxml/StartPage.fxml"));
+//        } catch (IOException io) {
+//        }
+
         //reset current user
         Context.getInstance().setActiveUser(null);
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-
-        stage.show();
+//        //create a new scene with root and set the stage
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//
+//        stage.show();
     }
 
     @FXML
@@ -218,14 +231,16 @@ public class OrderViewController implements Initializable {
     }
 
     private boolean isNotOutOfTime() throws Exception {
-        long diff = System.currentTimeMillis()-Context.getInstance().getActiveUser().getTtl();
-        System.out.println("current diff time:" +diff);
-        if (System.currentTimeMillis() - Context.getInstance().getActiveUser().getTtl() > 30000) {
-            System.out.println("OUT OF TIMEEEE");
-            cancel();
-            return false;
+        if (Context.getInstance().getActiveUser() != null) {
+            if (System.currentTimeMillis() - Context.getInstance().getActiveUser().getTtl() > 30000) {
+                System.out.println("OUT OF TIMEEEE");
+                cancel();
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            return false;
         }
     }
 }

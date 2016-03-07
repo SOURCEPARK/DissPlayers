@@ -83,7 +83,7 @@ public class AuthService extends CandyService {
                 }
             } catch (ClientHandlerException | UniformInterfaceException ex) {
                 System.out.println(Arrays.toString(ex.getStackTrace()));
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ErrorCode errorCode = mapper.readValue(responseString, ErrorCode.class);
                 System.out.println(errorCode.getErrorMessage());
                 if (countObservers() > 0) {

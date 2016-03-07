@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane prefHeight="603.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sourcepark.dissplayer.controller.StartPageController">
+    <children>
+        <AnchorPane id="AnchorPane" fx:id="content" layoutX="190.0" layoutY="-205.0" prefHeight="1018.0" prefWidth="619.0" rotate="90.0" style="-fx-background-color: #F7FE2E">
+            <children>
+                <ImageView id="rfid" fitHeight="362.0" fitWidth="625.0" layoutY="191.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/gif/TbccSIq.gif" />
+                    </image>
+                </ImageView>
+                <Text fx:id="errorMessage" fill="WHITE" layoutX="107.0" layoutY="882.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="399.0">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Text>
+            <Text layoutX="182.0" layoutY="776.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RRRAARRWHHGWWR!">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            </children>
+            <rotationAxis>
+                <Point3D z="3.0" />
+            </rotationAxis>
+        </AnchorPane>
+    </children>
+</Pane>

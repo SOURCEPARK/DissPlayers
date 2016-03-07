@@ -86,8 +86,8 @@
                         </GridPane>
                     </children>
                 </Pane>
-                <Button fx:id="cancelButton" layoutX="514.0" layoutY="611.0" mnemonicParsing="false" onAction="#cancel" prefHeight="32.0" prefWidth="56.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
-                <Button layoutX="20.0" layoutY="611.0" mnemonicParsing="false" onAction="#clearLog" prefHeight="39.0" prefWidth="69.0" style="-fx-background-color: #04ACE9;" text="clear" textFill="WHITE" />
+                <Button fx:id="cancelButton" layoutX="514.0" layoutY="594.0" mnemonicParsing="false" onAction="#cancel" prefHeight="32.0" prefWidth="56.0" style="-fx-background-color: #04ACE9;" text="Exit" textFill="WHITE" />
+                <Button layoutX="23.0" layoutY="589.0" mnemonicParsing="false" onAction="#clearLog" prefHeight="39.0" prefWidth="69.0" style="-fx-background-color: #04ACE9;" text="clear" textFill="WHITE" />
                 <Button layoutX="244.0" layoutY="586.0" onAction="#motor" prefHeight="44.0" prefWidth="115.0" text="Motor" />
                 <Button layoutX="244.0" layoutY="635.0" mnemonicParsing="false" onAction="#allOff" prefHeight="44.0" prefWidth="115.0" text="allOff" />
                 <Button layoutX="375.0" layoutY="586.0" onAction="#step" prefHeight="44.0" prefWidth="115.0" text="Schritt" />
@@ -115,6 +115,7 @@
                   </Button>
                       </children>
                   </GridPane>
+            <Button layoutX="26.0" layoutY="633.0" mnemonicParsing="false" onAction="#getIPAddress" prefHeight="46.0" prefWidth="71.0" text="IP" />
             </children>
         </AnchorPane>
     </children>
